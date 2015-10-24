@@ -1,14 +1,14 @@
-#Cube
-ƒfƒoƒbƒN—p‚ÅŒü‚«‚ª‚í‚©‚é‚æ‚¤‚É‚µ‚½ƒvƒŒƒnƒu
+ï»¿#Cube
+ãƒ‡ãƒãƒƒã‚¯ç”¨ã§å‘ããŒã‚ã‹ã‚‹ã‚ˆã†ã«ã—ãŸãƒ—ãƒ¬ãƒãƒ–
 
 #GUI
-ƒ^ƒbƒ`ƒ|ƒCƒ“ƒg‚ÆƒXƒ‰ƒCƒhƒ|ƒCƒ“ƒg‚ðŠi”[‚·‚é‚½‚ß‚ÌƒLƒƒƒ“ƒoƒX
+ã‚¿ãƒƒãƒãƒã‚¤ãƒ³ãƒˆã¨ã‚¹ãƒ©ã‚¤ãƒ‰ãƒã‚¤ãƒ³ãƒˆã‚’æ ¼ç´ã™ã‚‹ãŸã‚ã®ã‚­ãƒ£ãƒ³ãƒã‚¹
 
 #Slide Point
-ƒ^ƒbƒ`‚µ‚Ä‚¢‚éêŠ‚ðŽ¦‚·ƒCƒ[ƒW
+ã‚¿ãƒƒãƒã—ã¦ã„ã‚‹å ´æ‰€ã‚’ç¤ºã™ã‚¤ãƒ¡ãƒ¼ã‚¸
 
 #Touch Point
-ƒ^ƒbƒ`‚µ‚½êŠ‚ðŽ¦‚·ƒCƒ[ƒW
+ã‚¿ãƒƒãƒã—ãŸå ´æ‰€ã‚’ç¤ºã™ã‚¤ãƒ¡ãƒ¼ã‚¸
 
 #Screen
-ƒXƒe[ƒWƒV[ƒ“UI
+ã‚¹ãƒ†ãƒ¼ã‚¸ã‚·ãƒ¼ãƒ³UI

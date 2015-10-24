@@ -1,11 +1,11 @@
-#Player.cs
-�v���C���[�𑀍삷�邽�߂ɕK�v�ȃR���g���[���[(public void movd())�������Ă�
+﻿#Player.cs
+プレイヤーを操作するために必要なコントローラー(public void movd())が入ってる
 
 #TouchPoint.cs
-�X�}�z��ʂ��^�b�`�����ꏊ�ƃ^�b�`���Ă���ꏊ���ꂼ��ɃC���[�W�𒣂�t���邽�߂̃X�N���v�g
+スマホ画面をタッチした場所とタッチしている場所それぞれにイメージを張り付けるためのスクリプト
 
 #BMIManager.cs
-�X�e�[�W�V�[���ŉ�ʏ���ɕ\������BMI�Q�[�W��T�Q�[�W�̑����ɂ��ď�����Ă�X�N���v�g
+ステージシーンで画面上方に表示するBMIゲージとTゲージの増減について書かれてるスクリプト
 
 #Button
-�|�[�Y�ETFiP�E�X�L���{�^�������ꂼ�ꓮ�������߂̃X�N���v�g
+ポーズ・TFiP・スキルボタンをそれぞれ動かすためのスクリプト
