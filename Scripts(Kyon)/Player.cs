@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
+    //プレイヤーの移動が逆になってしまった時用
+    public bool reverse = false;
+
     //プレイヤーの移動スピード調整用変数
     public float speed = 1;
 
@@ -37,9 +40,13 @@ public class Player : MonoBehaviour {
     //回転速度
     private float rotationSpeed = 10000.0f;
 
+    //カメラ
+    GameObject cam;
+
 	// Use this for initialization
 	void Start () {
-
+        cam = GameObject.Find("Main Camera");
+        print(cam);
 	}
 	
 	// Update is called once per frame
@@ -73,12 +80,14 @@ public class Player : MonoBehaviour {
             //タッチされてる時間を計測
             touchTime += Time.deltaTime;
 
+            //入力をVector3に変換/移動量を制限
+            direction = new Vector3((float)x, (float)y, (float)z) / 1000;
+
             //フリック判定
             //時間
             if (touchTime < touchJdg)
             {
-                print("touchTime: " + touchTime);
-
+                //print("touchTime: " + touchTime);
                 print("touchTime is short");
                 
                 //指移動量Mathf.Abs(float value)でvalueの絶対値を返す
@@ -99,8 +108,6 @@ public class Player : MonoBehaviour {
             //タッチ位置と移動位置が同じなら移動
             else if (dragPoint != touch)
             {
-                //入力をVector3に変換/移動量を制限
-                direction = new Vector3((float)x, (float)y, (float)z) / 1000;
 
                 //入力ベクトルをQuaternionに変換
                 Quaternion to = Quaternion.LookRotation(direction);
@@ -110,7 +117,11 @@ public class Player : MonoBehaviour {
 
                 //タッチされた座標を画面上の座標に変換
                 Vector3 cm = Camera.main.ScreenToWorldPoint(direction);
-                Vector3 moveTo = new Vector3(cm.x * -1, 0, cm.z * -1) / 100;
+                Vector3 moveTo = new Vector3(cm.x, 0, cm.z) / 100;
+                if(reverse == true)
+                {
+                    moveTo = new Vector3(cm.x * -1, 0, cm.z * -1) / 100;
+                }
 
                 //移動
                 transform.Translate(moveTo * speed);
@@ -122,14 +133,21 @@ public class Player : MonoBehaviour {
             if (Input.GetMouseButtonUp(0))
             {
                 print("Flick");
-                //
-                flickJump = new Vector3((float)x, 5f, (float)z);
                 //Rigitbodyの影響で少しずつ傾くのを逐一初期化する
                 //初期化しないとそのうちコケる
                 transform.rotation = Quaternion.LookRotation(new Vector3(0f, 0f, 0f));
 
-                //ジャンプ
-                //transform.Translate(flickJump / 10);
+                //アクション
+                //3.0f経過するまで繰り返す
+                while (transform.position.y < 5.0f)
+                {
+                    print(transform.position);
+                    direction.y = 0.1f;
+                    //移動
+                    transform.Translate(direction * speed);
+                }
+                flickOk = false;
+                print(flickOk);
             }
         }
     }
