@@ -154,6 +154,12 @@ public class BMIManager : MonoBehaviour {
         Tguage.value = t;
     }
 
+    public void ppp()
+    {
+         print("hoge");
+    }
+
+    //T・FiP
     public void tFiP()
     {
         if(t < 99)
@@ -170,6 +176,7 @@ public class BMIManager : MonoBehaviour {
         }
     }
 
+    //スキル
     public void skill()
     {
         if (t > 33)
