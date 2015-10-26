@@ -23,7 +23,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage01()
     {
         stageName = "Stage1";
-        Application.LoadLevel("Loading");
+        Application.LoadLevel("LoadScene");
 
     }
 
@@ -31,7 +31,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage02()
     {
         stageName = "Stage2";
-        Application.LoadLevel("Loading");
+        Application.LoadLevel("LoadScene");
 
     }
 
@@ -39,7 +39,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage03()
     {
         stageName = "Stage3";
-        Application.LoadLevel("Loading");
+        Application.LoadLevel("LoadScene");
     }
 
 
