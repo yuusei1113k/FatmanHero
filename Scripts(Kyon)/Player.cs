@@ -3,6 +3,21 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
+    //移動判定かどうか
+    private bool moveOk;
+
+    //タップ判定かどうか
+    private bool tapOk;
+ 
+    //フリック用フリックなのか判定
+    private bool flickOk;
+
+    //タップ時に呼び出すオブジェクト
+    public GameObject pa;
+
+    //プレイヤーの移動が逆になってしまった時用
+    public bool reverse = false;
+
     //プレイヤーの移動スピード調整用変数
     public float speed = 1;
 
@@ -21,13 +36,8 @@ public class Player : MonoBehaviour {
     //フリック用タッチしている時間
     private double touchTime;
 
-    //フリック用フリックなのか判定
-    private bool flickOk;
-
     //タッチした位置と移動した位置の差分ベクトル
     private Vector3 direction;
-
-    private Vector3 flickJump;
 
     //directionに入れる座標
     private double x;
@@ -37,12 +47,11 @@ public class Player : MonoBehaviour {
     //回転速度
     private float rotationSpeed = 10000.0f;
 
-	// Use this for initialization
-	void Start () {
 
+	void Start () {
+        pa.SetActive(false);
 	}
 	
-	// Update is called once per frame
 	void Update () {
         move();
     }
@@ -57,6 +66,8 @@ public class Player : MonoBehaviour {
             touchTime = 0;
             //タッチされるたびにフリック判定を初期化
             flickOk = false;
+            tapOk = false;
+            moveOk = false;
         }
 
         //タッチされている間
@@ -73,34 +84,40 @@ public class Player : MonoBehaviour {
             //タッチされてる時間を計測
             touchTime += Time.deltaTime;
 
+            //入力をVector3に変換/移動量を制限
+            direction = new Vector3((float)x, (float)y, (float)z) / 1000;
+
             //フリック判定
             //時間
             if (touchTime < touchJdg)
             {
-                print("touchTime: " + touchTime);
-
+                //print("touchTime: " + touchTime);
                 print("touchTime is short");
+
+                //タップ判定
+                tapOk = true;
                 
                 //指移動量Mathf.Abs(float value)でvalueの絶対値を返す
                 if (Mathf.Abs((float)x) > flickJdg || Mathf.Abs((float)z) > flickJdg)
                 {
+                    tapOk = false;
+                    moveOk = false;
                     print("Flick stanby OK");
                     //フリックであると判定する
                     flickOk = true;
                 }
-                /*//必要か微妙
-                else
-                {
-                    return;
-                }
-                */
             }
 
             //タッチ位置と移動位置が同じなら移動
+            //フリックでもタップでもなければ移動
+            //else
             else if (dragPoint != touch)
             {
-                //入力をVector3に変換/移動量を制限
-                direction = new Vector3((float)x, (float)y, (float)z) / 1000;
+                //移動判定オン
+                moveOk = true;
+
+                //タップ判定オフ
+                tapOk = false;
 
                 //入力ベクトルをQuaternionに変換
                 Quaternion to = Quaternion.LookRotation(direction);
@@ -110,27 +127,68 @@ public class Player : MonoBehaviour {
 
                 //タッチされた座標を画面上の座標に変換
                 Vector3 cm = Camera.main.ScreenToWorldPoint(direction);
-                Vector3 moveTo = new Vector3(cm.x * -1, 0, cm.z * -1) / 100;
+                Vector3 moveTo = new Vector3(cm.x, 0, cm.z) / 100;
+                if(reverse == true)
+                {
+                    moveTo = new Vector3(cm.x * -1, 0, cm.z * -1) / 100;
+                }
+
+                print(moveTo * speed);
 
                 //移動
                 transform.Translate(moveTo * speed);
             }
+            else
+            {
+                flickOk = false;
+                tapOk = false;
+            }
         }
 
+        //フリックアクション
         if (flickOk == true)
         {
             if (Input.GetMouseButtonUp(0))
             {
                 print("Flick");
-                //
-                flickJump = new Vector3((float)x, 5f, (float)z);
                 //Rigitbodyの影響で少しずつ傾くのを逐一初期化する
                 //初期化しないとそのうちコケる
                 transform.rotation = Quaternion.LookRotation(new Vector3(0f, 0f, 0f));
 
-                //ジャンプ
-                //transform.Translate(flickJump / 10);
+                //瞬間移動
+                transform.Translate(direction * 5);
+                flickOk = false;
+                print(flickOk);
             }
+        }
+
+        //タップアクション
+        if(tapOk == true)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                print("Tap");
+                StartCoroutine(attack());
+                tapOk = false;
+                print(tapOk);
+            }
+        }
+    }
+
+    //アタックアクション
+    IEnumerator attack()
+    {
+        //オブジェクト表示
+        pa.SetActive(true);
+        while (true)
+        {
+            //1.0f待機
+            yield return new WaitForSeconds(1.0f);
+            //非表示
+            pa.SetActive(false);
+            print("hoge");
+            //コルーチン終了
+            yield break;
         }
     }
 }
