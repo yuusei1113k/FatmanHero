@@ -56,6 +56,7 @@ public class Player : MonoBehaviour {
         move();
     }
 
+
     public void move()
     {
         //タッチされた瞬間のみ

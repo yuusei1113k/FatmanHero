@@ -58,6 +58,10 @@ public class BMIManager : MonoBehaviour {
     private float bmiCounter = 0;
 
 
+    public float getBMI()
+    {
+        return bmi;
+    }
 
 
     // Use this for initialization
@@ -88,13 +92,14 @@ public class BMIManager : MonoBehaviour {
     public void changeBMIguage()
     {
         //デバッグ用ゲージ上昇・200で0になる
+        
+        bmi -= 1.0f;
         /*
-        bmi += 1.0f;
         if (bmi > 200)
         {
             bmi = 0;
-        }
-        */
+        }*/
+        
 
         //色変化
         if (bmi > 150f)
