@@ -21,4 +21,5 @@ public class SceneChanger : MonoBehaviour {
     {
         Application.LoadLevel("main");
     }
+
 }

@@ -175,14 +175,19 @@ public class Player : MonoBehaviour {
         }
     }
 
+    //アタックアクション
     IEnumerator attack()
     {
+        //オブジェクト表示
         pa.SetActive(true);
         while (true)
         {
+            //1.0f待機
             yield return new WaitForSeconds(1.0f);
+            //非表示
             pa.SetActive(false);
             print("hoge");
+            //コルーチン終了
             yield break;
         }
     }
