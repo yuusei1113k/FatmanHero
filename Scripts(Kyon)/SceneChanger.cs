@@ -19,21 +19,31 @@ public class SceneChanger : MonoBehaviour {
         Application.LoadLevel("StageSelect");
     }
 
+    //ステージ1ボタン
     public void stage01()
     {
         stageName = "Stage1";
+        Application.LoadLevel("Loading");
+
     }
+
+    //ステージ2ボタン
     public void stage02()
     {
         stageName = "Stage2";
+        Application.LoadLevel("Loading");
+
     }
+
+    //ステージ3ボタン
     public void stage03()
     {
         stageName = "Stage3";
+        Application.LoadLevel("Loading");
     }
 
 
-    //ステージ1へ
+    //ステージ
     public string toLoading()
     {
         return stageName;
