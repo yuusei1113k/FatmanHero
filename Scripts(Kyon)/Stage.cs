@@ -10,31 +10,40 @@ public class Stage : MonoBehaviour {
     private bool clear;
 
     //プレイヤーBMI
-    private float bmi = 200;
-    
+    private float bmi;
+
+    //BMIManagerコンポーネント
+    private BMIManager bmiManager;
 
 	// Use this for initialization
 	void Start () {
-	
+        bmiManager = GetComponent<BMIManager>();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update ()
+    {
+        bmi = bmiManager.getBMI();
+        toResult();
 	}
 
     //リザルトシーンへ遷移
     void toResult()
     {
+        //ボスを倒したら
         if (Boss.activeSelf == false)
         {
             clear = true;
             Application.LoadLevel("Result");
-        } else if (bmi == 0)
+        }
+
+        //BMIが0になったら
+        if (bmi <= 0)
         {
             clear = false;
             Application.LoadLevel("Result");
         }
+        else { }
     }
 
     public bool getResult()
