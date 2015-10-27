@@ -3,8 +3,6 @@ using System.Collections;
 
 public class SceneChanger : MonoBehaviour {
 
-    private GameObject Stage01;
-
     private string stageName;
 
     //タイトル画面へ
@@ -23,7 +21,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage01()
     {
         stageName = "Stage1";
-        Application.LoadLevel("Stage1");
+        Application.LoadLevel("LoadScene");
 
     }
 
@@ -31,7 +29,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage02()
     {
         stageName = "Stage2";
-        Application.LoadLevel("Loading");
+        Application.LoadLevel("LoadScene");
 
     }
 
@@ -39,7 +37,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage03()
     {
         stageName = "Stage3";
-        Application.LoadLevel("Loading");
+        Application.LoadLevel("LoadScene");
     }
 
 
