@@ -103,7 +103,7 @@ public class BMIManager : MonoBehaviour {
     {
         //デバッグ用ゲージ上昇・200で0になる
         
-        bmi -= 1.0f;
+        //bmi -= 1.0f;
         /*
         if (bmi > 200)
         {
