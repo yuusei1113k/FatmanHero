@@ -23,11 +23,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage01()
     {
         stageName = "Stage1";
-<<<<<<< HEAD
-        Application.LoadLevel("LoadScene");
-=======
         Application.LoadLevel("Stage1");
->>>>>>> remotes/origin/kyon
 
     }
 
@@ -35,7 +31,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage02()
     {
         stageName = "Stage2";
-        Application.LoadLevel("LoadScene");
+        Application.LoadLevel("Loading");
 
     }
 
@@ -43,7 +39,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage03()
     {
         stageName = "Stage3";
-        Application.LoadLevel("LoadScene");
+        Application.LoadLevel("Loading");
     }
 
 
