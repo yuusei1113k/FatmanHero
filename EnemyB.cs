@@ -4,11 +4,14 @@ using System.Collections;
 public class EnemyB : MonoBehaviour {
 
 	public Transform player;    //プレイヤーを代入
-	public float speed = 20; //移動速度
-	public float limitDistance = 50f; //敵キャラクターがどの程度近づいてくるか設定(この値以下には近づかない）
-	public int hp = 1;
-
-	private bool isGround = false;
+	public Transform punch;
+	public float speed = 5; //移動速度
+	public float limitDistance = 10f; //敵キャラクターがどの程度近づいてくるか設定(この値以下には近づかない）
+	public int hp = 10;
+	public GameObject bulletPrefab;
+	private float lastAttackTime;
+	private float attackInterval = 2f;
+	//private bool isGround = false;
 	
 	//ゲーム開始時に一度
 	void Start () {
@@ -31,14 +34,17 @@ public class EnemyB : MonoBehaviour {
 			transform.position = transform.position + (direction * speed * Time.deltaTime);
 			
 		} else if (distance < limitDistance) {
-			
-			//プレイヤーとの距離が制限値未満（近づき過ぎ）なので、後退する。
-			transform.position = transform.position - (direction * speed * Time.deltaTime);
+			if (Time.time > lastAttackTime + attackInterval){
+			//プレイヤーとの距離が制限値いないなので攻撃
+			Instantiate(bulletPrefab, punch.position, punch.rotation);
+			lastAttackTime = Time.time;
+			}
 		}
 		
 		//プレイヤーの方を向く
 		transform.rotation = Quaternion.LookRotation(direction);
-		
+
+
 		/*//重力落下処理（プレイヤーの距離関係なく下に移動する）
 		Vector3 rayPos = transform.position;
 		rayPos.y -= 1f;
@@ -57,4 +63,10 @@ public class EnemyB : MonoBehaviour {
 			Destroy(gameObject);
 		}*/
 	}
+	/*void OnTriggerEnter(Collider coll) {
+		if (coll.gameObject.tag == "Player") {
+			//Instantiate(Explosion, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+			Destroy(this.gameObject);
+		}
+	}*/
 }
