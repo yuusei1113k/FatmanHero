@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class TouchPoint : MonoBehaviour {
 
     //タッチパッドの範囲
     public GameObject panel;
+
+    //Flick!!の文字
+    public GameObject flick;
 
     //タッチした場所
     public GameObject touchPad;
@@ -14,23 +18,74 @@ public class TouchPoint : MonoBehaviour {
     public GameObject slidePad;
     private Vector2 slidePoint;
 
+    //Stageコンポーネント
+    StageManager stage;
+
     //タッチ制限値
     float minX;
     float maxX;
     float minY;
     float maxY;
 
+    //ポーズ中かどうか
+    private bool pause;
+
+    //タッチパッド作成可能領域
+    float x;
+    float y;
+
+    //コントローラーコンポーネント
+    Controller controller;
+
+    //Panel色変更用
+    Image panelImage;
+    Color panelColor;
 
 
     void Start () {
+        //PanelのImageコンポーネント
+        panelImage = panel.GetComponent<Image>();
+        //Stageコンポーネント
+        stage = FindObjectOfType<StageManager>();
+        //Controllerコンポーネント取得
+        controller = FindObjectOfType<Controller>();
         //タッチパッド非表示
         touchPad.SetActive(false);
         slidePad.SetActive(false);
-	}
-	
-	void Update () {
-        createPad();
-	}
+        flick.SetActive(false);
+    }
+
+    void Update()
+    {
+
+        //フリックの状態
+        if (controller.getFlick() == true)
+        {
+            flick.SetActive(true);
+        }
+        else
+        {
+            flick.SetActive(false);
+        }
+        //タッチパッド作成可能領域の指定
+        if (Input.GetMouseButtonDown(0))
+        {
+            //60 <= y <= 286
+            //2 <= x <= 198
+            x = Input.mousePosition.x;
+            y = Input.mousePosition.y;
+        }
+        //ポーズ中かどうか
+        pause = stage.getPause();
+        //ポーズ中なら作らない
+        if (pause == false)
+        {
+            if (2 < x && x < 198 && 60 < y && y < 286)
+            {
+                createPad();
+            }
+        }
+    }
 
     //タッチした場所としている場所にイメージを張る
     public void createPad()
@@ -66,6 +121,7 @@ public class TouchPoint : MonoBehaviour {
 
             //タッチパッドをタッチ地点に移動
             slidePad.transform.position = slidePoint;
+            flick.transform.position = slidePoint;
 
             //タッチパッド表示
             slidePad.SetActive(true);
