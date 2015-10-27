@@ -3,8 +3,6 @@ using System.Collections;
 
 public class SceneChanger : MonoBehaviour {
 
-    private GameObject Stage01;
-
     private string stageName;
 
     //タイトル画面へ
@@ -24,9 +22,13 @@ public class SceneChanger : MonoBehaviour {
     {
         stageName = "Stage1";
 <<<<<<< HEAD
+<<<<<<< HEAD
         Application.LoadLevel("LoadScene");
 =======
         Application.LoadLevel("Stage1");
+>>>>>>> remotes/origin/kyon
+=======
+        Application.LoadLevel("LoadScene");
 >>>>>>> remotes/origin/kyon
 
     }
