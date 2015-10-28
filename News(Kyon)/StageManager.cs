@@ -18,6 +18,7 @@ public class StageManager : MonoBehaviour {
 
     //クリアかゲームオーバーか
     public static bool clear;
+    
 
     private GameObject timer;
 
@@ -26,12 +27,14 @@ public class StageManager : MonoBehaviour {
     private int minuts;
     private int seconds;
 
+    SceneChanger scene;
+
     void Start()
     {
         startTime = Time.time;
-        outTime = 180;
+        outTime = 5;
         timer = GameObject.Find("Timer");
-        print(timer);
+        scene = FindObjectOfType<SceneChanger>();
     }
 
     void Update()
@@ -43,6 +46,11 @@ public class StageManager : MonoBehaviour {
     {
         parseTime += Time.deltaTime;
         nowTime = outTime - parseTime;
+        if (nowTime <= 0)
+        {
+            clear = false;
+            scene.toResult();
+        }
         mathTime(nowTime);
         timer.GetComponent<Text>().text = "残タイム　" + minuts + ":" + seconds;
     }
@@ -52,6 +60,7 @@ public class StageManager : MonoBehaviour {
         if(t < 60)
         {
             minuts = 0;
+            seconds = (int)t;
         }
         else
         {
@@ -80,7 +89,6 @@ public class StageManager : MonoBehaviour {
 
     public bool getResult()
     {
-        print(clear);
         return clear;
     }
 }
