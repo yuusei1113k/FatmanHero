@@ -138,7 +138,6 @@ public class BMIManager : MonoBehaviour {
         if(bmi <= 0)
         {
             stage.setResult(false);
-            scene.toResult();
         }
     }
 

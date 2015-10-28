@@ -24,15 +24,7 @@ public class SceneChanger : MonoBehaviour {
     public void stage01()
     {
         stageName = "Stage1";
-<<<<<<< HEAD
-<<<<<<< HEAD
         Application.LoadLevel("LoadScene");
-=======
-        Application.LoadLevel("Stage1");
->>>>>>> remotes/origin/kyon
-=======
-        Application.LoadLevel("LoadScene");
->>>>>>> remotes/origin/kyon
 
     }
 
