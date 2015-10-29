@@ -16,20 +16,15 @@ public class Button : MonoBehaviour {
     //BMIManagerコンポーネント
     BMIManager bmiManager;
 
-    //Stageコンポーネント
-    StageManager stage;
-
     void Start()
     {
         //モーダル取得・非表示
-        modal = GameObject.Find("PausePack");
+        modal = GameObject.Find("Modal");
+        print(modal);
         modal.SetActive(false);
 
         //BMIManagerコンポーネント
         bmiManager = FindObjectOfType<BMIManager>();
-
-        //Stageコンポーネント
-        stage = FindObjectOfType<StageManager>();
 
         //初期化
         tfip = false;
@@ -47,7 +42,6 @@ public class Button : MonoBehaviour {
             Time.timeScale = 0f;
             print("timeScale = 0");
             pause = true;
-            stage.setPause(pause);
             modal.SetActiveRecursively(true);
         }
         //ポーズ中だったら
@@ -57,8 +51,12 @@ public class Button : MonoBehaviour {
             Time.timeScale = 1.0f;
             modal.SetActive(false);
             pause = false;
-            stage.setPause(pause);
         }
+    }
+
+    public bool getTfip()
+    {
+        return tfip;
     }
     
     //T・FiPボタン
@@ -81,28 +79,16 @@ public class Button : MonoBehaviour {
     //スキルボタン
     public void useSkill()
     {
-        if (pause == false)
-        {
-            //BMIManagerコンポーネントのスキルを発動
-            bmiManager.skill();
-        }
+        //BMIManagerコンポーネントのスキルを発動
+        bmiManager.skill();
     }
 
     
     void Update()
     {
-        if(pause == false)
+        if(tfip == true)
         {
-            if (tfip == true)
-            {
-                bmiManager.tFiP();
-            }
-
+            bmiManager.tFiP();
         }
-    }
-
-    public bool getPause()
-    {
-        return pause;
     }
 }
