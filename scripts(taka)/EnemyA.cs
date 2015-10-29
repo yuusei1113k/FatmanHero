@@ -7,13 +7,13 @@ public class EnemyA : MonoBehaviour {
 	public Transform player;
 	public float speed =1;
 	public int hp = 10;
-	public int atackpower = 2;
+	public int attackpower = 1;
 	private string enemyState;
 	private string[] state = new string[2] {"MOVE", "ATTACK"};
 	private float lastAttackTime;
 	private float attackInterval = 2f;
 	public float limitDistance = 10f;
-	public Transform muzzle;
+
 	public GameObject bullet;
 	public Vector3 playerPos ;
 	public float distance;
@@ -25,13 +25,14 @@ public class EnemyA : MonoBehaviour {
 	void Start () {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		enemyState = state[0];
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 
-
+		print (enemyState);
 		switch (enemyState){
 		case "MOVE":	
 			move();
@@ -45,16 +46,19 @@ public class EnemyA : MonoBehaviour {
 
 		
 	public void move(){
-		playerPos = player.position; //プレーヤーの位置
+		playerPos = player.position;//プレーヤーの位置
+		Vector3 mypos = new Vector3 (playerPos.x, 1, playerPos.z);
 		distance = Vector3.Distance(playerPos , transform.position); 
-		Vector3 direction = playerPos - transform.position; //方向
+		Vector3 direction = mypos - transform.position; //方向
 		direction = direction.normalized; //単位化（距離要素を取り除く
 		transform.position = transform.position + (direction * speed * Time.deltaTime);
 		print (direction);//方向
 		transform.LookAt (player);//プレーヤーの方を向く
+
 		if (distance <= limitDistance) {
 
 			enemyState = state [1];
+
 		}
 	}
 
@@ -77,31 +81,36 @@ public class EnemyA : MonoBehaviour {
 
 
 	IEnumerator attackstop(){
-		/*Vector3 nowPosition = new Vector3 (transform.position.x, 5f, transform.position.z);
-		transform.position = nowPosition;*/
-		//Instantiate(bullet, bullet.transform.position, bullet.transform.rotation);
-		bullet.SetActive (true);
+
+		bullet.SetActive (true);//表示させる球の設定
+
 		lastAttackTime = Time.time;
-		//transform.position = transform.position;
-		yield return new WaitForSeconds (waitForSeconds);
-		enemyState = state [0];
-		bullet.SetActive (false);
-		yield break;
+
+		yield return new WaitForSeconds (waitForSeconds);//待期時間
+		enemyState = state [0];			//呼び出すスイッチ分の内容
+
+		bullet.SetActive (false);//表示させた球を消す
+		yield break;					//待期時間を終了させる
 	}
 	
 
 
 
-	/*void OnTriggerEnter(Collider coll) {
-		hp = hp - attackpower;
-		
-		if( hp <= 0){
-			Destory(GameObject);
-		}
+	void OnCollisionEnter(Collision coll) {
+		print (coll.gameObject);
 
-		if (coll.gameObject.tag == "Player") {
-			//Instantiate(Explosion, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+
+		if (coll.gameObject.name != "zimen" && coll.gameObject.name != "kabe" ) {
+			hp = hp - attackpower;
+			
+			if( hp <= 0){
 			Destroy(this.gameObject);
-		}
-	}*/
+			}
+		} 
+		
+	
+
+
+
+	}
 }
