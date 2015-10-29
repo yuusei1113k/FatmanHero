@@ -43,7 +43,6 @@ public class TouchPoint : MonoBehaviour {
     Color panelColor;
 
     Button button;
-    bool tfip;
 
     void Start () {
         //PanelのImageコンポーネント
@@ -86,16 +85,14 @@ public class TouchPoint : MonoBehaviour {
         
         //ポーズ中かどうか
         pause = stage.getPause();
-        print("pause: " + pause);
-        tfip = button.getTfip();
         //ポーズ中なら作らない
-        if (pause == false)
+        if ( button.getPushButton() == false && button.getPushButton() == false)
         {
-            
-            if (tfip == false)
-            {
-                createPad();
-            }
+             createPad();
+        }
+        else
+        {
+            print("hoge");
         }
     }
 

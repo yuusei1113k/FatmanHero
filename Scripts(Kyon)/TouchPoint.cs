@@ -42,14 +42,18 @@ public class TouchPoint : MonoBehaviour {
     Image panelImage;
     Color panelColor;
 
+    Button button;
 
     void Start () {
         //PanelのImageコンポーネント
         panelImage = panel.GetComponent<Image>();
         //Stageコンポーネント
         stage = FindObjectOfType<StageManager>();
+        print(stage);
         //Controllerコンポーネント取得
         controller = FindObjectOfType<Controller>();
+        button = FindObjectOfType<Button>();
+        
         //タッチパッド非表示
         touchPad.SetActive(false);
         slidePad.SetActive(false);
@@ -58,10 +62,12 @@ public class TouchPoint : MonoBehaviour {
 
     void Update()
     {
-
         //フリックの状態
+        
+        //print("TouchPointFlick: " + controller.getFlick());
         if (controller.getFlick() == true)
         {
+            print("Flick!");
             flick.SetActive(true);
         }
         else
@@ -76,15 +82,17 @@ public class TouchPoint : MonoBehaviour {
             x = Input.mousePosition.x;
             y = Input.mousePosition.y;
         }
+        
         //ポーズ中かどうか
         pause = stage.getPause();
         //ポーズ中なら作らない
-        if (pause == false)
+        if ( button.getPushButton() == false && button.getPushButton() == false)
         {
-            if (2 < x && x < 198 && 60 < y && y < 286)
-            {
-                createPad();
-            }
+             createPad();
+        }
+        else
+        {
+            print("hoge");
         }
     }
 

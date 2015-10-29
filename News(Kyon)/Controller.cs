@@ -91,7 +91,7 @@ public class Controller : MonoBehaviour {
             tapOk = false;
             moveOk = false;
         }
-        if (button.getTfip() == false)
+        if (button.getPushButton() == false && stage.getPause() == false)
         {
             //タッチされている間
             if (Input.GetMouseButton(0))
@@ -121,7 +121,7 @@ public class Controller : MonoBehaviour {
 
                 //フリックスピード
                 double flickSpeed = flickVector / touchTime;
-
+               
                 //フリックスピードが800以上あればフリック
                 if (flickSpeed > 800)
                 {

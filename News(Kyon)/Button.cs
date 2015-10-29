@@ -4,17 +4,17 @@ using UnityEngine.Events;
 
 public class Button : MonoBehaviour {
 
-    //ポーズ中かどうか
-    private bool pause = false;
-
     //モーダル
     private GameObject modal;
 
     //TFiP発動中かどうか
     private bool tfip;
-    
+    private bool pushButton;
+
     //BMIManagerコンポーネント
     BMIManager bmiManager;
+
+    StageManager stage;
 
     void Start()
     {
@@ -25,10 +25,27 @@ public class Button : MonoBehaviour {
 
         //BMIManagerコンポーネント
         bmiManager = FindObjectOfType<BMIManager>();
+        stage = FindObjectOfType<StageManager>();
 
         //初期化
         tfip = false;
-        pause = false;
+        pushButton = false;
+    }
+
+    public void buttonTrue()
+    {
+        if(pushButton == false)
+        {
+            pushButton = true;
+        }
+    }
+
+    public void buttonFalse()
+    {
+        if (pushButton == true)
+        {
+            pushButton = false;
+        }
     }
 
     //ポーズボタン
@@ -36,12 +53,12 @@ public class Button : MonoBehaviour {
     {
         print("Push");
         //ポーズ中でなければ
-        if(pause == false)
+        if(stage.getPause() == false)
         {
             //時間を止めてモーダルを出す
             Time.timeScale = 0f;
             print("timeScale = 0");
-            pause = true;
+            stage.setPause(true);
             modal.SetActiveRecursively(true);
         }
         //ポーズ中だったら
@@ -50,13 +67,13 @@ public class Button : MonoBehaviour {
             //時間を動かしモーダルを消す
             Time.timeScale = 1.0f;
             modal.SetActive(false);
-            pause = false;
+            stage.setPause(false);
         }
     }
 
-    public bool getTfip()
+    public bool getPushButton()
     {
-        return tfip;
+        return pushButton;
     }
     
     //T・FiPボタン

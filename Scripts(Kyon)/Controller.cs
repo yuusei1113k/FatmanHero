@@ -54,11 +54,14 @@ public class Controller : MonoBehaviour {
     //Buttonコンポーネント取得（Pause中か確認するために）
     private StageManager stage;
 
+    Button button;
+
     void Start () {
         //StageManagerコンポーネント取得
         stage = FindObjectOfType<StageManager>();
         //攻撃判定オフ
         pa.SetActive(false);
+        button = FindObjectOfType<Button>();
 	}
 	
 	void Update () {
@@ -88,7 +91,7 @@ public class Controller : MonoBehaviour {
             tapOk = false;
             moveOk = false;
         }
-        if (2 < touch.x && touch.x < 198 && 60 < touch.y && touch.y < 286)
+        if (button.getPushButton() == false && stage.getPause() == false)
         {
             //タッチされている間
             if (Input.GetMouseButton(0))
@@ -118,7 +121,7 @@ public class Controller : MonoBehaviour {
 
                 //フリックスピード
                 double flickSpeed = flickVector / touchTime;
-
+               
                 //フリックスピードが800以上あればフリック
                 if (flickSpeed > 800)
                 {
