@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using GameSystems;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Controller : MonoBehaviour {
 	
@@ -216,10 +218,55 @@ public class Controller : MonoBehaviour {
 				print("Tap");
                 anim.SetBool("Move", false);
                 anim.SetTrigger("Attack");
-                print("animtag: " + anim.GetParameter(0));
+                //print("animtag: " + anim.GetParameter(0));
                 tapOk = false;
 				//print(tapOk);
 			}
 		}
 	}
+
+    /*
+    探知機に当たった物体を格納するコレクション
+    Key  : 接触GameObject 
+    Value: プレイヤーとの距離
+    */
+    Dictionary<GameObject, float> list = new Dictionary<GameObject, float>();
+    void OnTriggerStay(Collider c)
+    {
+        //Enemyタグがついたオブジェクトのみコレクションに格納
+        if(c.tag == "Enemy")
+        {
+            if (list.ContainsKey(c.gameObject) == false)
+            {
+                //コレクションに存在しない場合追加
+                list.Add(c.gameObject, Vector3.Distance(transform.position, c.transform.position));
+            }
+            else
+            {
+                //既にコレクションに存在したらValueを更新
+                list[c.gameObject] = Vector3.Distance(transform.position, c.transform.position);
+            }
+
+            //コレクションの中で最も近いGameObjectに向く
+            float min = 10f;
+            foreach(var val in list)
+            {
+                //プレイヤーに近い方に向く
+                if(min > val.Value)
+                {
+                    min = val.Value;
+                    Transform target = val.Key.gameObject.transform;
+                    transform.LookAt(target);
+                }
+            }
+
+        }
+    }
+
+    //離れたらコレクションから削除
+    void OnTriggerExit(Collider c)
+    {
+        list.Remove(c.gameObject);
+    }
+
 }
