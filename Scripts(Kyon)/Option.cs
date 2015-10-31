@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using StageState;
 
 public class Option : MonoBehaviour {
 
@@ -14,7 +15,9 @@ public class Option : MonoBehaviour {
     //オプション
     public void openOption()
     {
+        State state = new State(GameState.Pausing);
         optionPanel.SetActiveRecursively(true);
+        
     }
 
     //オプション閉じる

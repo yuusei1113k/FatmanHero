@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using StageState;
 
 public class SceneChanger : MonoBehaviour {
 
@@ -8,12 +9,14 @@ public class SceneChanger : MonoBehaviour {
     //タイトル画面へ
     public void toTitle()
     {
+        State state = new State(GameState.NotPlaying);
         Application.LoadLevel("Title");
     }
 
     //ステージセレクト画面へ
     public void toStageSelect()
     {
+        State state = new State(GameState.NotPlaying);
         Application.LoadLevel("StageSelect");
     }
 

@@ -15,8 +15,7 @@ public class Result : MonoBehaviour {
 
     //ゲームオーバー画面
     public GameObject gameOverScreen;
-
-	// Use this for initialization
+    
 	void Start () {
         stage = FindObjectOfType<StageManager>();
         clear = stage.getResult();

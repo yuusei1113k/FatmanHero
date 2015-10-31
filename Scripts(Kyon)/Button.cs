@@ -22,7 +22,7 @@ public class Button : MonoBehaviour {
     void Start()
     {
         //モーダル取得・非表示
-        modal = GameObject.Find("Modal");
+        modal = GameObject.Find("PausePack");
         modal.SetActive(false);
 
         //BMIManagerコンポーネント
