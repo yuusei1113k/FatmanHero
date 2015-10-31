@@ -4,6 +4,13 @@ using UnityEngine.UI;
 
 public class BMIManager : MonoBehaviour {
 
+    //BMIを減らすスピードを変える
+    public float bmiDecrement = 1f;
+
+    //T・FiPを増やすスピードを変える
+    public float tIncrement = 1f;
+
+
     //BMIゲージ(slider)
     private Slider BMIguage;
 
@@ -30,7 +37,7 @@ public class BMIManager : MonoBehaviour {
         A = 255
     */
 
-        //Tゲージ(slider)
+    //Tゲージ(slider)
     private Slider Tguage;
 
     //Tゲージレベル
@@ -49,10 +56,7 @@ public class BMIManager : MonoBehaviour {
     private float bmi;
 
     //Tゲージ
-    private int t;
-
-    //TFiP変換スピード調整用
-    public int tSpeed = 1;
+    private float t;
 
     //bmiカウンター
     private float bmiCounter = 0;
@@ -60,8 +64,8 @@ public class BMIManager : MonoBehaviour {
     //StageManatgerコンポーネント
     StageManager stage;
 
-    //SceneChangerコンポーネント
-    SceneChanger scene;
+    //StageSelectコンポーネント
+    StageSelect sc = new StageSelect();
 
     //他のスクリプトでbmi呼ぶ用
     public float getBMI()
@@ -82,8 +86,7 @@ public class BMIManager : MonoBehaviour {
 
         //Stageコンポーネント取得
         stage = FindObjectOfType<StageManager>();
-        print(stage);
-        scene = FindObjectOfType<SceneChanger>();
+        //print(stage);
 
         //BMIguage初期化
         bmi = 200.0f;
@@ -104,11 +107,12 @@ public class BMIManager : MonoBehaviour {
         //デバッグ用ゲージ上昇・200で0になる
         
         //bmi -= 1.0f;
-        /*
+        
+        //BMIの上限値を設定
         if (bmi > 200)
         {
-            bmi = 0;
-        }*/
+            bmi = 200f;
+        }
         
 
         //色変化
@@ -184,14 +188,10 @@ public class BMIManager : MonoBehaviour {
     {
         if(t < 99)
         {
-            bmiCounter += 1f;
-            bmi -= 0.1f;
-            print(BMIguage.value);
-            print("BMICounter: " + bmiCounter);
+            bmi -= 0.3f * bmiDecrement;
             if(bmiCounter % 5f == 0f)
             {
-                t += 1;
-                //print("T: " + t);
+                t += (0.2f * tIncrement);
             }
         }
     }
@@ -201,7 +201,6 @@ public class BMIManager : MonoBehaviour {
     {
         if (t > 66)
         {
-            bmiCounter = 0;
             t -= 33;
             bmi = 200.0f;
         }

@@ -1,141 +1,43 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
-using StageState;
+using GameSystems;
 
 public class StageManager : MonoBehaviour {
 
-    //残タイム
-    int outTime;
-
-    //開始時間
-    float startTime;
-
-    //経過時間
-    float parseTime;
-
-    //ポーズ中かどうか
-    private bool pause;
-
-    //クリアかゲームオーバーか
-    public static bool clear;
-    
-    //タイマーオブジェクト
-    private GameObject timer;
-
-    //現在のタイム
-    private float nowTime;
-    //テキスト用の分・秒
-    private int minuts;
-    private int seconds;
-
-    //シーンチェンジャーコンポーネント
-    private SceneChanger scene;
-
-    //BMIManagerコンポーネント
-    private BMIManager bmiManager;
-
-    //リザルトテロップコンポーネント
-    private GameObject resultTelop;
+    State state = new State();
 
     void Start()
     {
-        
-        startTime = Time.time;
-        outTime = 5;
-        timer = GameObject.Find("Timer");
-        scene = FindObjectOfType<SceneChanger>();
-        resultTelop = GameObject.Find("ResultTelop");
-        bmiManager = FindObjectOfType<BMIManager>();
-
+        state.setState(GameState.Playing);
     }
 
-    void Update()
+    //ポーズ状態の遷移
+    public void setPause(bool p)
     {
-        setTimer();
-        resultManager(clear);
-    }
-
-    //リザルト管理
-    void resultManager(bool c)
-    {
-        if (clear == c)
+        if(p == false)
         {
-            resultTelop.GetComponent<Text>().text = "ステージクリア！！";
-            scene.toResult();
-        }
-        else if(clear == c)
-        {
-            resultTelop.GetComponent<Text>().text = "ゲームオーバー";
-            scene.toResult();
+            //ポーズ中にする
+            state.setState(GameState.Pausing);
         }
         else
         {
-            //何もしない
+            //プレイ中にする
+            state.setState(GameState.Playing);
         }
     }
 
-    //タイマー書き換え
-    void setTimer()
+    //リザルト状態の遷移
+    public void setResult(bool c)
     {
-        parseTime += Time.deltaTime;
-        nowTime = outTime - parseTime;
-        if (nowTime <= 0)
+        if(c == true)
         {
-            clear = false;
-        }
-        mathTime(nowTime);
-        timer.GetComponent<Text>().text = "残タイム　" + minuts + ":" + seconds;
-    }
-
-    //タイマー計算
-    void mathTime(float t)
-    {
-        if(t < 60)
-        {
-            minuts = 0;
-            seconds = (int)t;
+            //クリア
+            state.setState(GameState.StageClear);
         }
         else
         {
-            seconds = (int)t;
-            seconds %= 60;
-            minuts = ((int)t - seconds) / 60;
+            //ゲームオーバー
+            state.setState(GameState.GameOver);
         }
-    }
-
-    //ポーズ中かどうか変更する
-    public bool setPause(bool p)
-    {
-        pause = p;
-        return pause;
-    }
-
-    //他で呼ぶ用ポーズ中かどうか取得
-    public bool getPause()
-    {
-        return pause;
-    }
-
-    //リザルトを変更する
-    public bool setResult(bool c)
-    {
-        clear = c;
-        return clear;
-    }
-
-    //他で呼ぶ用リザルト
-    public bool getResult()
-    {
-        return clear;
-    }
-
-    //リザルト画面に遷移する前にステージシーンでテロップを出す
-    IEnumerator telop()
-    {
-        resultTelop.SetActiveRecursively(true);
-        yield return new WaitForSeconds(3.0f);
-        resultTelop.SetActive(false);
-        yield break;
     }
 }

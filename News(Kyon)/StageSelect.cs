@@ -1,29 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
-using StageState;
+using GameSystems;
 
-public class SceneChanger : MonoBehaviour {
+public class StageSelect : MonoBehaviour {
+    
+    State state = new State();
 
-    private string stageName;
+    ScenChanger sc = new ScenChanger();
+
 
     //タイトル画面へ
     public void toTitle()
     {
-        State state = new State(GameState.NotPlaying);
+        state.setState(GameState.NotPlaying);
         Application.LoadLevel("Title");
     }
 
     //ステージセレクト画面へ
     public void toStageSelect()
     {
-        State state = new State(GameState.NotPlaying);
+        state.setState(GameState.NotPlaying);
         Application.LoadLevel("StageSelect");
     }
 
     //ステージ1ボタン
     public void stage01()
     {
-        stageName = "Stage1";
+        sc.setStage(StageName.Stage1);
         Application.LoadLevel("LoadScene");
 
     }
@@ -31,7 +34,7 @@ public class SceneChanger : MonoBehaviour {
     //ステージ2ボタン
     public void stage02()
     {
-        stageName = "Stage2";
+        sc.setStage(StageName.Stage2);
         Application.LoadLevel("LoadScene");
 
     }
@@ -39,15 +42,8 @@ public class SceneChanger : MonoBehaviour {
     //ステージ3ボタン
     public void stage03()
     {
-        stageName = "Stage3";
+        sc.setStage(StageName.Stage3);
         Application.LoadLevel("LoadScene");
-    }
-
-
-    //ステージ
-    public string toLoading()
-    {
-        return stageName;
     }
 
     //リザルトへ

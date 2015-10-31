@@ -1,30 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GameSystems;
 
 public class Result : MonoBehaviour {
-
-    //ステージクリアかどうか
-    private bool clear;
-    private bool gameOver;
-
-    //Stageコンポーネント
-    private StageManager stage;
 
     //クリア画面
     public GameObject clearScreen;
 
     //ゲームオーバー画面
     public GameObject gameOverScreen;
+
+    State state = new State();
     
 	void Start () {
-        stage = FindObjectOfType<StageManager>();
-        clear = stage.getResult();
-        if(clear == true)
+        if(state.getState() == GameState.StageClear)
         {
             clearScreen.SetActive(true);
             gameOverScreen.SetActive(false);
         }
-        else if(clear == false)
+        else if(state.getState() == GameState.GameOver)
         {
             gameOverScreen.SetActive(true);
             clearScreen.SetActive(false);
