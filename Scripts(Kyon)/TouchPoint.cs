@@ -36,24 +36,14 @@ public class TouchPoint : MonoBehaviour {
     Image panelImage;
     Color panelColor;
 
-<<<<<<< HEAD
     //Buttonコンポーネント
     Button button;
 
     State state = new State();
-=======
-    Button button;
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 
     void Start () {
         //PanelのImageコンポーネント
         panelImage = panel.GetComponent<Image>();
-<<<<<<< HEAD
-=======
-        //Stageコンポーネント
-        stage = FindObjectOfType<StageManager>();
-        print(stage);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
         //Controllerコンポーネント取得
         controller = FindObjectOfType<Controller>();
         button = FindObjectOfType<Button>();
@@ -71,10 +61,6 @@ public class TouchPoint : MonoBehaviour {
         if (controller.getFlick() == true)
         {
             print("Flick!");
-<<<<<<< HEAD
-=======
-            flick.SetActive(true);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
         }
         else
         {
@@ -88,25 +74,14 @@ public class TouchPoint : MonoBehaviour {
             y = Input.mousePosition.y;
         }
         
-<<<<<<< HEAD
         //ポーズ中なら作らない
         if ( button.getPushButton() == false && state.getState() == GameState.Playing)
-=======
-        //ポーズ中かどうか
-        pause = stage.getPause();
-        //ポーズ中なら作らない
-        if ( button.getPushButton() == false && button.getPushButton() == false)
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
         {
              createPad();
         }
         else
         {
-<<<<<<< HEAD
             print("PauseNow or PushButtonNow");
-=======
-            print("hoge");
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
         }
     }
 

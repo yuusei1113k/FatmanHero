@@ -12,7 +12,6 @@ public class Controller : MonoBehaviour {
 	
 	//フリック用フリックなのか判定
 	private bool flickOk;
-<<<<<<< HEAD
 
 	//プレイヤーの移動が逆になってしまった時用
 	public bool reverse = false;
@@ -65,63 +64,6 @@ public class Controller : MonoBehaviour {
 
     void Start () {
 		//攻撃判定オフ
-=======
-	
-	//タップ時に呼び出すオブジェクト
-	public GameObject pa;
-	
-	//プレイヤーの移動が逆になってしまった時用
-	public bool reverse = false;
-	
-	//プレイヤーの移動スピード調整用変数
-	public float speed = 1;
-	
-	//タッチされた座標
-	private Vector2 touch;
-	
-	//移動先のワールド座標
-	private Vector3 cm;
-	private Vector3 moveTo;
-	
-	//フリック判定用タッチ判定時間
-	private double touchJdg = 0.15;
-	
-	//フリック判定用タッチ判定移動量
-	private double flickJdg = 30;
-	
-	//タッチ後移動した座標
-	private Vector2 dragPoint;
-	
-	//フリック用タッチしている時間
-	private double touchTime;
-	
-	//タッチした位置と移動した位置の差分ベクトル
-	private Vector3 direction;
-	
-	//directionに入れる座標
-	private double x;
-	private double y;
-	private double z;
-	
-	//回転速度
-	private float rotationSpeed = 10000.0f;
-	
-	//Buttonコンポーネント取得（Pause中か確認するために）
-	private StageManager stage;
-	
-	Button button;
-
-    //アニメーション
-    Animator anim;
-
-
-    void Start () {
-		//StageManagerコンポーネント取得
-		stage = FindObjectOfType<StageManager>();
-
-		//攻撃判定オフ
-		pa.SetActive(false);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 		button = FindObjectOfType<Button>();
 
         //モーションをいじるため
@@ -130,11 +72,7 @@ public class Controller : MonoBehaviour {
     }
 
     void Update () {
-<<<<<<< HEAD
 		if (state.getState() != GameState.Pausing)
-=======
-		if (stage.getPause() == false)
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 		{
 			move();
 		}
@@ -160,11 +98,7 @@ public class Controller : MonoBehaviour {
 			tapOk = false;
 			moveOk = false;
 		}
-<<<<<<< HEAD
 		if (button.getPushButton() == false && state.getState() == GameState.Playing)
-=======
-		if (button.getPushButton() == false && stage.getPause() == false)
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 		{
 			//タッチされている間
 			if (Input.GetMouseButton(0))
@@ -219,33 +153,20 @@ public class Controller : MonoBehaviour {
 					//キャラクターを向かせる
 					transform.rotation = Quaternion.RotateTowards(transform.rotation, to, rotationSpeed * Time.deltaTime);
 					
-<<<<<<< HEAD
 					//タッチされた座標をワールドの座標に変換
 					cm = Camera.main.ScreenToWorldPoint(direction);
                     //print("cm: " + cm);
-=======
-					//タッチされた座標を画面上の座標に変換
-					cm = Camera.main.ScreenToWorldPoint(direction);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 					moveTo = new Vector3(cm.x, 0, cm.z) / 100;
 					if (reverse == true)
 					{
 						moveTo = new Vector3(cm.x * -1, 0, cm.z * -1) / 100;
 					}
-<<<<<<< HEAD
 
                     //print(moveTo);
                     //print(transform.TransformPoint(moveTo));
                     //print(transform.position);
 					//移動
 					transform.Translate(direction.normalized * 0.1f * speed, Space.World);
-=======
-					
-					//print(moveTo * speed);
-					
-					//移動
-					transform.Translate(moveTo * speed);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 				}
 				//移動でもフリックでもなければ
 				else if (touchTime < touchJdg)
@@ -256,13 +177,10 @@ public class Controller : MonoBehaviour {
 					tapOk = true;
 				}
 			}
-<<<<<<< HEAD
             if (Input.GetMouseButtonUp(0))
             {
                 anim.SetBool("Move", false);
             }
-=======
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 			
 		}
 		
@@ -283,15 +201,9 @@ public class Controller : MonoBehaviour {
 					moveTo = new Vector3(cm.x * -1, 0, cm.z * -1);
 				}
 				
-<<<<<<< HEAD
 				transform.Translate(direction * 100, Space.World);
 				flickOk = false;
 				//print(flickOk);
-=======
-				transform.Translate(moveTo * 10);
-				flickOk = false;
-				print(flickOk);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 			}
 		}
 		
@@ -300,7 +212,6 @@ public class Controller : MonoBehaviour {
 		{
 			if (Input.GetMouseButtonUp(0))
 			{
-<<<<<<< HEAD
 				//print("TouchiTime: " + touchTime);
 				print("Tap");
                 anim.SetBool("Move", false);
@@ -311,38 +222,4 @@ public class Controller : MonoBehaviour {
 			}
 		}
 	}
-=======
-				print("TouchiTime: " + touchTime);
-				
-				print("Tap");
-                anim.SetBool("Move", false);
-                anim.SetTrigger("Attack");
-
-                anim.SetBool("Move", false);
-                anim.SetTrigger("Attack");
-
-                //StartCoroutine(attack());
-                tapOk = false;
-				print(tapOk);
-			}
-		}
-	}
-	
-	//アタックアクション
-	IEnumerator attack()
-	{
-		//オブジェクト表示
-		pa.SetActive(true);
-		while (true)
-		{
-			//1.0f待機
-			yield return new WaitForSeconds(1.0f);
-			//非表示
-			pa.SetActive(false);
-			print("End of TapAction");
-			//コルーチン終了
-			yield break;
-		}
-	}
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 }

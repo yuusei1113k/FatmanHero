@@ -15,30 +15,18 @@ public class Button : MonoBehaviour {
     //BMIManagerコンポーネント
     BMIManager bmiManager;
 
-<<<<<<< HEAD
     State state = new State();
     
-=======
-    StageManager stage;
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 
     void Start()
     {
         //モーダル取得・非表示
         modal = GameObject.Find("Modal");
-<<<<<<< HEAD
         //print(modal);
-=======
-        print(modal);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
         modal.SetActive(false);
 
         //BMIManagerコンポーネント
         bmiManager = FindObjectOfType<BMIManager>();
-<<<<<<< HEAD
-=======
-        stage = FindObjectOfType<StageManager>();
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
 
         //初期化
         tfip = false;
@@ -66,20 +54,12 @@ public class Button : MonoBehaviour {
     {
         print("Push");
         //ポーズ中でなければ
-<<<<<<< HEAD
         if(state.getState() == GameState.Playing)
-=======
-        if(stage.getPause() == false)
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
         {
             //時間を止めてモーダルを出す
             Time.timeScale = 0f;
             print("timeScale = 0");
-<<<<<<< HEAD
             state.setState(GameState.Pausing);
-=======
-            stage.setPause(true);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
             modal.SetActiveRecursively(true);
         }
         //ポーズ中だったら
@@ -88,11 +68,7 @@ public class Button : MonoBehaviour {
             //時間を動かしモーダルを消す
             Time.timeScale = 1.0f;
             modal.SetActive(false);
-<<<<<<< HEAD
             state.setState(GameState.Playing);
-=======
-            stage.setPause(false);
->>>>>>> 7da40c605093b1e8154f0c4ae6ad25b999042b2f
         }
     }
 
