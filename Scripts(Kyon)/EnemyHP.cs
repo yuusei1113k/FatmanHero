@@ -13,20 +13,19 @@ public class EnemyHP : MonoBehaviour {
     private GameObject enemy;
     private EnemyA ea;
 
-    private GameObject camera;
+    //public GameObject camera;
 
 	// Use this for initialization
 	void Start () {
         enemy = transform.parent.gameObject;
         ea = enemy.GetComponent<EnemyA>();
         hp = ea.getEvil();
-        camera = GameObject.Find("Camera");
-        print(camera);
+        //camera = GameObject.Find("Camera");
     }
 
     // Update is called once per frame
     void Update () {
-        transform.LookAt(camera.transform);
+        //transform.LookAt(camera.transform);
         gameObject.transform.rotation = Quaternion.LookRotation(HProtation);
         if (hp >= 0)
         {

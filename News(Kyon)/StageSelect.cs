@@ -9,33 +9,32 @@ public class StageSelect : MonoBehaviour {
     ScenChanger sc = new ScenChanger();
 
 
-    //タイトル画面へ
+    //タイトルボタン
     public void toTitle()
     {
         state.setState(GameState.NotPlaying);
-        Application.LoadLevel("Title");
+        sc.toTitle();
     }
 
-    //ステージセレクト画面へ
+    //ステージセレクトボタン
     public void toStageSelect()
     {
         state.setState(GameState.NotPlaying);
-        Application.LoadLevel("StageSelect");
+        sc.toStageSelect();
     }
 
     //ステージ1ボタン
     public void stage01()
     {
         sc.setStage(StageName.Stage1);
-        Application.LoadLevel("LoadScene");
-
+        sc.toLoading();
     }
 
     //ステージ2ボタン
     public void stage02()
     {
         sc.setStage(StageName.Stage2);
-        Application.LoadLevel("LoadScene");
+        sc.toLoading();
 
     }
 
@@ -43,6 +42,7 @@ public class StageSelect : MonoBehaviour {
     public void stage03()
     {
         sc.setStage(StageName.Stage3);
+        sc.toLoading();
     }
 
     //次のステージボタン
@@ -58,18 +58,12 @@ public class StageSelect : MonoBehaviour {
                 sc.setStage(StageName.Stage3);
                 break;
         }
+        sc.toLoading();
     }
 
     //リトライボタン
     public void retry()
     {
-        Application.LoadLevel("LoadScene");
+        sc.toLoading();
     }
-
-    //リザルトへ
-    public void toResult()
-    {
-        Application.LoadLevel("Result");
-    }
-
 }

@@ -50,9 +50,7 @@ public class LoadScene : MonoBehaviour {
 		stageName = sc.getStageName().ToString();
         
 		print ("stageName: " + stageName);
-		//Debug.Log ("aaaa" + scenechanger);
-		//Debug.Log ("bbbb" + scenechanger.toLoading ());
-		
+
 		// 非同期でロード開始
 		async = Application.LoadLevelAsync(stageName.ToString());
 		// デフォルトはtrue。ロード完了したら勝手にシーンきりかえ発生しないよう設定。
@@ -64,22 +62,15 @@ public class LoadScene : MonoBehaviour {
 		//while(i < 0.9f){
 
 			loadingText.text = "NowLoading..." + (async.progress * 100).ToString("F0") + "%";
-			//loadingText.text = "NowLoading..." + (i*100+20).ToString("F0") + "%";
 			Debug.Log ("ローディングパーセント" + async.progress * 100);
-			//i = i + 0.1f;
-			//lodingBar.value = i;
 			lodingBar.value = async.progress;
 			yield return new WaitForEndOfFrame();
-			//yield return new WaitForSeconds(5f);
 
 		}
 		lodingBar.value = 0.9f;
 		loadingText.text = "NowLoading...100%";
 
-		//yield return new WaitForSeconds(10f);
-
 		yield return async;
-		//async.allowSceneActivation = true;				           
 	}
 
 	void swichLoad(){

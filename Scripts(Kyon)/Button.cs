@@ -16,12 +16,14 @@ public class Button : MonoBehaviour {
     BMIManager bmiManager;
 
     State state = new State();
+
+    ScenChanger sc = new ScenChanger();
     
 
     void Start()
     {
         //モーダル取得・非表示
-        modal = GameObject.Find("Modal");
+        modal = GameObject.Find("PauseModal");
         //print(modal);
         modal.SetActive(false);
 
@@ -60,7 +62,7 @@ public class Button : MonoBehaviour {
             Time.timeScale = 0f;
             print("timeScale = 0");
             state.setState(GameState.Pausing);
-            modal.SetActiveRecursively(true);
+            modal.SetActive(true);
         }
         //ポーズ中だったら
         else
@@ -72,6 +74,12 @@ public class Button : MonoBehaviour {
         }
     }
 
+    //タイトルボタン
+    public void toTitle()
+    {
+        sc.toTitle();
+    }
+
     public bool getPushButton()
     {
         return pushButton;
@@ -80,25 +88,31 @@ public class Button : MonoBehaviour {
     //T・FiPボタン
     public void startTFiP()
     {
-        //T・FiPが発動してなければ
-        if (tfip == false)
+        if(state.getState() == GameState.Playing)
         {
-            //発動
-            tfip = true;
-        }
-        //T・FiPが波動中だったら
-        else
-        {
-            //停止
-            tfip = false;
+            //T・FiPが発動してなければ
+            if (tfip == false)
+            {
+                //発動
+                tfip = true;
+            }
+            //T・FiPが波動中だったら
+            else
+            {
+                //停止
+                tfip = false;
+            }
         }
     }
 
     //スキルボタン
     public void useSkill()
     {
-        //BMIManagerコンポーネントのスキルを発動
-        bmiManager.skill();
+        if(state.getState() == GameState.Playing)
+        {
+            //BMIManagerコンポーネントのスキルを発動
+            bmiManager.skill();
+        }
     }
 
     
