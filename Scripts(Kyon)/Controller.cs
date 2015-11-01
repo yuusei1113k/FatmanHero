@@ -226,15 +226,18 @@ public class Controller : MonoBehaviour {
 	}
 
     /*
+    探知機: Sphere Collider, Center(0, 1, 0), Radius(3), Is Trigger(On)
     探知機に当たった物体を格納するコレクション
     Key  : 接触GameObject 
     Value: プレイヤーとの距離
     */
-    Dictionary<GameObject, float> list = new Dictionary<GameObject, float>();
+    public Dictionary<GameObject, float> list = new Dictionary<GameObject, float>();
     void OnTriggerStay(Collider c)
     {
+        float min = 10f;
+
         //Enemyタグがついたオブジェクトのみコレクションに格納
-        if(c.tag == "Enemy")
+        if (c.tag == "Enemy")
         {
             if (list.ContainsKey(c.gameObject) == false)
             {
@@ -248,25 +251,75 @@ public class Controller : MonoBehaviour {
             }
 
             //コレクションの中で最も近いGameObjectに向く
-            float min = 10f;
             foreach(var val in list)
             {
+                min = val.Value;
                 //プレイヤーに近い方に向く
-                if(min > val.Value)
+                if (min >= val.Value)
                 {
-                    min = val.Value;
                     Transform target = val.Key.gameObject.transform;
+                    print("target: " + target);
                     transform.LookAt(target);
                 }
             }
-
         }
     }
 
     //離れたらコレクションから削除
     void OnTriggerExit(Collider c)
     {
-        list.Remove(c.gameObject);
+        if (list.ContainsKey(c.gameObject))
+        {
+            list.Remove(c.gameObject);
+        }
+    }
+    //BMI外用
+    public float bmi = 200f;
+    public float getBMI()
+    {
+        return bmi;
+    }
+    public void setBMI(float f)
+    {
+        bmi = f;
+    }
+    public void incBMI(float f)
+    {
+        bmi += f;
+    }
+
+    //Enemyの弾が当たったらBMIを減らす
+    void OnTriggerEnter(Collider c)
+    {
+        if(c.name == "Bullet")
+        {
+            bmi-= 0.1f;
+            c.gameObject.SetActive(false);
+        }
+        if(c.name == "Item0")
+        {
+            bmi += 50f;
+        }
+    }
+
+    //更生力 外用
+    private float jabAtk = 1f;
+    private float smashAtk = 3f;
+    public float getJabAtk()
+    {
+        return jabAtk;
+    }
+    public float getSmashAtk()
+    {
+        return smashAtk;
+    }
+    public void setJabAtk(float f)
+    {
+        jabAtk = f;
+    }
+    public void setSmashAtk(float f)
+    {
+        smashAtk = f;
     }
 
 }

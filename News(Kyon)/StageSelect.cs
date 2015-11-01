@@ -43,6 +43,26 @@ public class StageSelect : MonoBehaviour {
     public void stage03()
     {
         sc.setStage(StageName.Stage3);
+    }
+
+    //次のステージボタン
+    public void nextStage()
+    {
+        StageName current = sc.getStageName();
+        switch (current)
+        {
+            case StageName.Stage1:
+                sc.setStage(StageName.Stage2);
+                break;
+            case StageName.Stage2:
+                sc.setStage(StageName.Stage3);
+                break;
+        }
+    }
+
+    //リトライボタン
+    public void retry()
+    {
         Application.LoadLevel("LoadScene");
     }
 
