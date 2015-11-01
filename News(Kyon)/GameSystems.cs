@@ -38,16 +38,21 @@ namespace GameSystems{
 
     class ScenChanger
     {
-        private static StageName stageName;
+        private static StageName currentStage;
 
         public StageName getStageName()
         {
-            return stageName;
+            return currentStage;
         }
 
         public void setStage(StageName e)
         {
-            stageName = e;
+            currentStage = e;
+        }
+
+        public void toResult()
+        {
+            Application.LoadLevel("Result");
         }
     };
 };

@@ -93,6 +93,7 @@ public class BMIManager : MonoBehaviour {
 
         //Tゲージ初期化
         t = 33;
+        con = player.GetComponent<Controller>();
     }
 
     void Update () {
@@ -101,17 +102,21 @@ public class BMIManager : MonoBehaviour {
         changeTguage();
 	}
 
+    public GameObject player;
+    private Controller con;
     //BMIゲージの色・値変更
     public void changeBMIguage()
     {
+        //プレイヤーからBMIの値をとってくる
+        bmi = con.getBMI();
+
         //デバッグ用ゲージ上昇・200で0になる
         
         //bmi -= 1.0f;
-        
         //BMIの上限値を設定
-        if (bmi > 200)
+        if (bmi > 200f)
         {
-            bmi = 200f;
+            con.setBMI(200f);
         }
         
 
@@ -142,6 +147,7 @@ public class BMIManager : MonoBehaviour {
         if(bmi <= 0)
         {
             stage.setResult(false);
+            sc.toResult();
         }
     }
 
@@ -165,18 +171,26 @@ public class BMIManager : MonoBehaviour {
         if(t > 65)
         {
             tLevel2.SetActive(true);
+            con.setJabAtk(2f);
+            con.setSmashAtk(6f);
         }
         if(t > 98)
         {
+            con.setJabAtk(5f);
+            con.setSmashAtk(10f);
             tLevel2.SetActive(true);
             tLevel3.SetActive(true);
         }
         if(t < 99)
         {
+            con.setJabAtk(2f);
+            con.setSmashAtk(6f);
             tLevel3.SetActive(false);
         }
         if ( t < 66)
         {
+            con.setJabAtk(1f);
+            con.setSmashAtk(3f);
             tLevel2.SetActive(false);
             tLevel3.SetActive(false);
         }
@@ -188,7 +202,7 @@ public class BMIManager : MonoBehaviour {
     {
         if(t < 99)
         {
-            bmi -= 0.3f * bmiDecrement;
+            con.incBMI(-0.3f * bmiDecrement);
             if(bmiCounter % 5f == 0f)
             {
                 t += (0.2f * tIncrement);
@@ -202,8 +216,43 @@ public class BMIManager : MonoBehaviour {
         if (t > 66)
         {
             t -= 33;
-            bmi = 200.0f;
+            con.incBMI(50f);
         }
+    }
 
+    private float healPoint;
+    //BMIゲージ回復
+    public float BMIUP(int itemName)
+    {
+        Debug.Log("ゲージ回復前" + bmi);
+        switch (itemName)
+        {
+            case 0:
+                healPoint = 30f;
+                break;
+            case 1:
+                healPoint = 40f;
+                break;
+            case 2:
+                healPoint = 20f;
+                break;
+            case 3:
+                healPoint = 10f;
+                break;
+            case 4:
+                healPoint = 5f;
+                break;
+            default:
+                healPoint = 0;
+                break;
+        }
+        Debug.Log("ヒールポイント：" + healPoint);
+        con.incBMI(healPoint);
+        /*if (bmi >= 200f)
+        {
+            con.setBMI(200f);
+        }*/
+        Debug.Log("ゲージ回復後" + bmi);
+        return bmi;
     }
 }
