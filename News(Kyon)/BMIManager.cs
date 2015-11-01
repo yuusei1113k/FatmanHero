@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using GameSystems;
 
 public class BMIManager : MonoBehaviour {
 
@@ -65,7 +66,10 @@ public class BMIManager : MonoBehaviour {
     StageManager stage;
 
     //StageSelectコンポーネント
-    StageSelect sc = new StageSelect();
+    ScenChanger sc = new ScenChanger();
+
+    public AudioClip[] audioSorce;
+    private AudioSource audio;
 
     //他のスクリプトでbmi呼ぶ用
     public float getBMI()
@@ -94,6 +98,8 @@ public class BMIManager : MonoBehaviour {
         //Tゲージ初期化
         t = 33;
         con = player.GetComponent<Controller>();
+
+        audio = GetComponent<AudioSource>();
     }
 
     void Update () {
@@ -200,14 +206,31 @@ public class BMIManager : MonoBehaviour {
     //T・FiP
     public void tFiP()
     {
-        if(t < 99)
+        audio.volume = 0.05f;
+        if (t < 99)
         {
+            if(t < 66)
+            {
+                audio.pitch = 0.5f;
+                audio.PlayOneShot(audioSorce[1]);
+            }
+            else if (t < 99)
+            {
+                audio.pitch = 1.0f;
+                audio.PlayOneShot(audioSorce[1]);
+            }
             con.incBMI(-0.3f * bmiDecrement);
             if(bmiCounter % 5f == 0f)
             {
                 t += (0.2f * tIncrement);
             }
         }
+        else if (t >= 99)
+        {
+            audio.pitch = 2.0f;
+            audio.PlayOneShot(audioSorce[1]);
+        }
+
     }
 
     //スキル
@@ -215,6 +238,8 @@ public class BMIManager : MonoBehaviour {
     {
         if (t > 66)
         {
+            audio.volume = 0.1f;
+            audio.PlayOneShot(audioSorce[2]);
             t -= 33;
             con.incBMI(50f);
         }
@@ -224,23 +249,30 @@ public class BMIManager : MonoBehaviour {
     //BMIゲージ回復
     public float BMIUP(int itemName)
     {
+        audio.volume = 0.5f;
+        audio.PlayOneShot(audioSorce[3]);
         Debug.Log("ゲージ回復前" + bmi);
         switch (itemName)
         {
             case 0:
-                healPoint = 30f;
+                print("おむすび");
+                healPoint = 5f;
                 break;
             case 1:
-                healPoint = 40f;
+                print("コーラ");
+                healPoint = 10f;
                 break;
             case 2:
+                print("ポテチ");
                 healPoint = 20f;
                 break;
             case 3:
-                healPoint = 10f;
+                print("肉まん");
+                healPoint = 30f;
                 break;
             case 4:
-                healPoint = 5f;
+                print("ピザ");
+                healPoint = 50f;
                 break;
             default:
                 healPoint = 0;
@@ -248,10 +280,6 @@ public class BMIManager : MonoBehaviour {
         }
         Debug.Log("ヒールポイント：" + healPoint);
         con.incBMI(healPoint);
-        /*if (bmi >= 200f)
-        {
-            con.setBMI(200f);
-        }*/
         Debug.Log("ゲージ回復後" + bmi);
         return bmi;
     }

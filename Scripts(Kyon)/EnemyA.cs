@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using GameSystems;
+using System;
 
 public class EnemyA : MonoBehaviour {
 
@@ -30,6 +31,10 @@ public class EnemyA : MonoBehaviour {
     public GameObject[] item;
     public int itemTmp;
 
+    //音
+    public AudioClip[] audioSorce;
+    private AudioSource audio;
+
     void Start()
     {
         //プレイヤー取得
@@ -39,7 +44,15 @@ public class EnemyA : MonoBehaviour {
         //徘徊モードにする
         nowState = enemyState[0];
 
+        //ステージマネージャーコンポーネント
         sm = FindObjectOfType<StageManager>();
+
+        //弾ポジション
+        bullet.transform.position = new Vector3(transform.position.x, 2, 10);
+        bullet.SetActive(false);
+
+        //音を鳴らすコンポーネント
+        audio = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -50,13 +63,23 @@ public class EnemyA : MonoBehaviour {
 
         //プレイヤーとの距離
         distance = Vector3.Distance(transform.position, playerPos);
+        //wonderモード
         if(distance > limitDistanse)
         {
             nowState = enemyState[0];
         }
+        //attackモード
         else
         {
             nowState = enemyState[1];
+            try
+            {
+                bullet.SetActive(true);
+            }catch(Exception)
+            {
+                
+            }
+
         }
         //ステートによりモード切替
         switch (nowState)
@@ -65,7 +88,8 @@ public class EnemyA : MonoBehaviour {
                 wonder();
                 break;
             case "attack":
-                attack();
+                //attack();
+                StartCoroutine(shot());
                 break;
         }
 
@@ -99,11 +123,54 @@ public class EnemyA : MonoBehaviour {
     }
 
     //攻撃モード
-    //2秒間弾を出す
     public GameObject bullet;
+    //2秒間弾を出す
+    IEnumerator shot()
+    {
+        try
+        {
+
+            //方向
+            Vector3 direction = playerPos - bullet.transform.position;
+
+            //単位化（距離要素を取り除く
+            direction = direction.normalized;
+
+            //プレイヤーに向かって移動
+            bullet.transform.position = bullet.transform.position + (direction * speed * Time.deltaTime);
+
+            //プレーヤーの方を向く
+            transform.LookAt(player.transform);
+
+        }
+        catch (Exception)
+        {
+            yield break;
+        }
+    }
     public void attack()
     {
-        //bullet.SetActive(true);
+        try
+        {
+
+            //方向
+            Vector3 direction = playerPos - bullet.transform.position;
+
+            //単位化（距離要素を取り除く
+            direction = direction.normalized;
+
+            //プレイヤーに向かって移動
+            bullet.transform.position = bullet.transform.position + (direction * speed * Time.deltaTime);
+
+            //プレーヤーの方を向く
+            transform.LookAt(player.transform);
+
+        }
+        catch (Exception)
+        {
+
+        }
+
     }
 
     //悪意（体力）外用
@@ -120,32 +187,42 @@ public class EnemyA : MonoBehaviour {
     //プレイヤーの更生力
     private float jabAtk;
     private float smashAtk;
-    void OnCollisionEnter(Collision c)
+    void OnTriggerEnter(Collider c)
     {
+        //音量調整
+        audio.volume = 0.1f;
+
         jabAtk = con.getJabAtk();
         smashAtk = con.getSmashAtk();
-        switch (c.collider.tag)
+        switch (c.tag)
         {
             case "Jab":
+                print("Hit Jab");
+                //ジャブのヒット音
+                audio.PlayOneShot(audioSorce[0]);
+
                 evilPoint -= jabAtk;
                 break;
             case "Smash":
+                print("Hit Smash");
+                //スマッシュのヒット音
+                audio.PlayOneShot(audioSorce[1]);
+
                 evilPoint -= smashAtk;
                 break;
         }
     }
 
+    //アイテムドロップ
     void itemPop()
     {
-        Instantiate(item[0], transform.position, Quaternion.identity).name = itemTmp.ToString();
+        Instantiate(item[itemTmp], transform.position, Quaternion.identity).name = itemTmp.ToString();
     }
 
     //アイテムの抽選メソッド
     public int itemRnd()
     {
-        itemTmp = Random.Range(0, 3);
+        itemTmp = UnityEngine.Random.Range(0, 3);
         return itemTmp;
-
-        //Debug.Log ("アイテム抽選：" + itemTmp);
     }
 }

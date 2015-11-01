@@ -38,18 +38,41 @@ namespace GameSystems{
 
     class ScenChanger
     {
+        State state = new State();
+        //選択ステージ
         private static StageName currentStage;
-
+        //取得用
         public StageName getStageName()
         {
             return currentStage;
         }
-
+        //セット用
         public void setStage(StageName e)
         {
             currentStage = e;
         }
 
+        //タイトル画面へ
+        public void toTitle()
+        {
+            state.setState(GameState.NotPlaying);
+            Application.LoadLevel("Title");
+        }
+
+        //ステージセレクト画面へ
+        public void toStageSelect()
+        {
+            state.setState(GameState.NotPlaying);
+            Application.LoadLevel("StageSelect");
+        }
+
+        //LoadSceneへ
+        public void toLoading()
+        {
+            Application.LoadLevel("LoadScene");
+        }
+
+        //リザルトへ
         public void toResult()
         {
             Application.LoadLevel("Result");
