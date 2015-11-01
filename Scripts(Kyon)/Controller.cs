@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class Controller : MonoBehaviour {
-	
-	//移動判定かどうか
-	private bool moveOk;
+
+    //移動判定かどうか
+    private bool moveOk = false;
 	
 	//タップ判定かどうか
-	private bool tapOk;
+	private bool tapOk = false;
 	
 	//フリック用フリックなのか判定
-	private bool flickOk;
+	private bool flickOk = false;
 
 	//プレイヤーの移動が逆になってしまった時用
 	public bool reverse = false;
@@ -63,6 +63,12 @@ public class Controller : MonoBehaviour {
     //更生力
     private float attack;
 
+    //アクションカウント
+    private int tapCount = 0;
+
+    //オーディオソース
+    public AudioClip[] audioSorce;
+    private AudioSource audio;
 
     void Start () {
 		//攻撃判定オフ
@@ -71,6 +77,8 @@ public class Controller : MonoBehaviour {
         //モーションをいじるため
         anim = GetComponent<Animator>();
 
+        //オーディオソースコンポーネント
+        audio = GetComponent<AudioSource>();
     }
 
     void Update () {
@@ -208,19 +216,30 @@ public class Controller : MonoBehaviour {
 				//print(flickOk);
 			}
 		}
-		
-		//タップアクション
+
+        //タップアクション
 		if(tapOk == true)
 		{
 			if (Input.GetMouseButtonUp(0))
 			{
-				//print("TouchiTime: " + touchTime);
 				print("Tap");
+                tapCount++;
                 anim.SetBool("Move", false);
                 anim.SetTrigger("Attack");
-                //print("animtag: " + anim.GetParameter(0));
+                //攻撃モーション時に全身
+                if(tapCount / 3 != 1)
+                {
+                    transform.Translate(transform.forward * 2 * Time.deltaTime);
+                }
+                else
+                {
+                    transform.Translate(transform.forward / 10);
+                    tapCount = 0;
+                }
+                //素振り音を鳴らす
+                audio.volume = 0.5f;
+                audio.PlayOneShot(audioSorce[0]);
                 tapOk = false;
-				//print(tapOk);
 			}
 		}
 	}
@@ -235,7 +254,7 @@ public class Controller : MonoBehaviour {
     void OnTriggerStay(Collider c)
     {
         float min = 10f;
-
+        //print("OnTri: " + c);
         //Enemyタグがついたオブジェクトのみコレクションに格納
         if (c.tag == "Enemy")
         {
@@ -258,11 +277,20 @@ public class Controller : MonoBehaviour {
                 if (min >= val.Value)
                 {
                     Transform target = val.Key.gameObject.transform;
-                    print("target: " + target);
+                    //print("target: " + target);
                     transform.LookAt(target);
                 }
             }
         }
+        //敵の攻撃にあったたら
+        if (c.gameObject.name == "Bullet")
+        {
+            print("Bullet");
+            bmi -= 30f;
+            c.gameObject.SetActive(false);
+            Destroy(c.gameObject);
+        }
+
     }
 
     //離れたらコレクションから削除
@@ -275,28 +303,27 @@ public class Controller : MonoBehaviour {
     }
     //BMI外用
     public float bmi = 200f;
+    //取得
     public float getBMI()
     {
         return bmi;
     }
+    //セット
     public void setBMI(float f)
     {
         bmi = f;
     }
+    //足す
     public void incBMI(float f)
     {
         bmi += f;
     }
 
-    //Enemyの弾が当たったらBMIを減らす
-    void OnTriggerEnter(Collider c)
+    //アイテムを取る
+    void OnCollisionEnter(Collision c)
     {
-        if(c.name == "Bullet")
-        {
-            bmi-= 0.1f;
-            c.gameObject.SetActive(false);
-        }
-        if(c.name == "Item0")
+        //print("OnColi: " + c);
+        if(c.gameObject.tag == "Item")
         {
             bmi += 50f;
         }
@@ -305,6 +332,7 @@ public class Controller : MonoBehaviour {
     //更生力 外用
     private float jabAtk = 1f;
     private float smashAtk = 3f;
+    //取得
     public float getJabAtk()
     {
         return jabAtk;
@@ -313,6 +341,7 @@ public class Controller : MonoBehaviour {
     {
         return smashAtk;
     }
+    //セット
     public void setJabAtk(float f)
     {
         jabAtk = f;
