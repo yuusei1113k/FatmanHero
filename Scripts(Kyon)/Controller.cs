@@ -84,6 +84,7 @@ public class Controller : MonoBehaviour {
         //オーディオソースコンポーネント
         audio = GetComponent<AudioSource>();
 
+        //波動非表示
         hado.SetActive(false);
     }
 
@@ -168,19 +169,13 @@ public class Controller : MonoBehaviour {
 					
 					//キャラクターを向かせる
 					transform.rotation = Quaternion.RotateTowards(transform.rotation, to, rotationSpeed * Time.deltaTime);
-					
-					//タッチされた座標をワールドの座標に変換
-					cm = Camera.main.ScreenToWorldPoint(direction);
-                    //print("cm: " + cm);
-					moveTo = new Vector3(cm.x, 0, cm.z) / 100;
-					if (reverse == true)
+
+                    //反転用
+                    if (reverse == true)
 					{
-						moveTo = new Vector3(cm.x * -1, 0, cm.z * -1) / 100;
+						direction = new Vector3(-direction.x, 0, -direction.z);
 					}
 
-                    //print(moveTo);
-                    //print(transform.TransformPoint(moveTo));
-                    //print(transform.position);
 					//移動
 					transform.Translate(direction.normalized * 0.1f * speed, Space.World);
 				}
@@ -209,12 +204,10 @@ public class Controller : MonoBehaviour {
 				print("Flick");
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.deltaTime);
 				
-				//瞬間移動
-				cm = Camera.main.ScreenToWorldPoint(direction);
-				moveTo = new Vector3(cm.x, 0, cm.z);
+				//反転用
 				if (reverse == true)
 				{
-					moveTo = new Vector3(cm.x * -1, 0, cm.z * -1);
+					direction = new Vector3(-direction.x, 0, direction.z);
 				}
 				
 				transform.Translate(direction * 100, Space.World);
@@ -260,7 +253,7 @@ public class Controller : MonoBehaviour {
         float min = 10f;
         //print("OnTri: " + c);
         //Enemyタグがついたオブジェクトのみコレクションに格納
-        if (c.tag == "Enemy")
+        if (c.tag == "Enemy" || c.tag == "Boss")
         {
             if (list.ContainsKey(c.gameObject) == false)
             {
@@ -345,12 +338,60 @@ public class Controller : MonoBehaviour {
         smashAtk = f;
     }
 
+    //タップ時波動エフェクトを出す
     IEnumerator Hado()
     {
         hado.SetActive(true);
         yield return new WaitForSeconds(0.5f);
         hado.SetActive(false);
         yield break;
+    }
+
+    //スキル
+    //回転
+    public GameObject skillRound;
+    public GameObject skillHundred;
+    public GameObject skillHundredRound;
+    public IEnumerator SkillRound()
+    {
+        int i = 0;
+        while (true)
+        {
+            i++;
+            //print("Skill");
+            skillRound.SetActive(true);
+            skillRound.transform.RotateAround(transform.position, new Vector3(0f, 10f), 30f);
+            yield return new WaitForFixedUpdate();
+            if (i >= 200)
+            {
+                print("i >= 50");
+                skillRound.SetActive(false);
+                StopCoroutine(SkillRound());
+                yield break;
+            }
+        }
+    }
+
+    //百裂拳
+    public IEnumerator SkillHundred()
+    {
+        int i = 0;
+        while (true)
+        {
+            i++;
+            //print("Skill");
+            skillHundred.SetActive(true);
+            transform.Translate(transform.forward * 2 * Time.deltaTime);
+            skillHundredRound.transform.RotateAround(transform.position, new Vector3(0f, 10f), 90f);
+            yield return new WaitForFixedUpdate();
+            if (i >= 200)
+            {
+                print("i >= 50");
+                skillHundred.SetActive(false);
+                StopCoroutine(SkillHundred());
+                yield break;
+            }
+        }
     }
 
 }

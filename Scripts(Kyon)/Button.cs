@@ -38,6 +38,8 @@ public class Button : MonoBehaviour
 
         tEffect = GameObject.Find("TEffect").GetComponent<ParticleSystem>();
 
+        tEffect.Stop();
+
     }
 
     public void buttonTrue()
@@ -119,7 +121,7 @@ public class Button : MonoBehaviour
         if (state.getState() == GameState.Playing)
         {
             //BMIManagerコンポーネントのスキルを発動
-            bmiManager.skill();
+            bmiManager.useSkill();
         }
     }
 
