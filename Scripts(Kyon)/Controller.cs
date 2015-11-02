@@ -70,6 +70,10 @@ public class Controller : MonoBehaviour {
     public AudioClip[] audioSorce;
     private AudioSource audio;
 
+    //波動
+    public GameObject hado;
+
+
     void Start () {
 		//攻撃判定オフ
 		button = FindObjectOfType<Button>();
@@ -79,6 +83,8 @@ public class Controller : MonoBehaviour {
 
         //オーディオソースコンポーネント
         audio = GetComponent<AudioSource>();
+
+        hado.SetActive(false);
     }
 
     void Update () {
@@ -226,6 +232,7 @@ public class Controller : MonoBehaviour {
                 tapCount++;
                 anim.SetBool("Move", false);
                 anim.SetTrigger("Attack");
+                StartCoroutine(Hado());
                 //攻撃モーション時に全身
                 if(tapCount / 3 != 1)
                 {
@@ -236,9 +243,6 @@ public class Controller : MonoBehaviour {
                     transform.Translate(transform.forward / 10);
                     tapCount = 0;
                 }
-                //素振り音を鳴らす
-                audio.volume = 0.5f;
-                audio.PlayOneShot(audioSorce[0]);
                 tapOk = false;
 			}
 		}
@@ -319,16 +323,6 @@ public class Controller : MonoBehaviour {
         bmi += f;
     }
 
-    //アイテムを取る
-    void OnCollisionEnter(Collision c)
-    {
-        //print("OnColi: " + c);
-        if(c.gameObject.tag == "Item")
-        {
-            bmi += 50f;
-        }
-    }
-
     //更生力 外用
     private float jabAtk = 1f;
     private float smashAtk = 3f;
@@ -349,6 +343,14 @@ public class Controller : MonoBehaviour {
     public void setSmashAtk(float f)
     {
         smashAtk = f;
+    }
+
+    IEnumerator Hado()
+    {
+        hado.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        hado.SetActive(false);
+        yield break;
     }
 
 }

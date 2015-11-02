@@ -13,7 +13,7 @@ public class EnemyA : MonoBehaviour {
     public float speed = 1;
 
     //ステート
-    private string[] enemyState = new string[2] {"wonder", "attack"};
+    private string[] enemyState = new string[3] {"wonder", "attack","explode"};
     //ステート変更用
     private string nowState;
 
@@ -64,23 +64,33 @@ public class EnemyA : MonoBehaviour {
         //プレイヤーとの距離
         distance = Vector3.Distance(transform.position, playerPos);
         //wonderモード
-        if(distance > limitDistanse)
+        if(distance > limitDistanse && evilPoint >= 0)
         {
             nowState = enemyState[0];
         }
         //attackモード
-        else
+        else if(distance <= limitDistanse && evilPoint >= 0)
         {
             nowState = enemyState[1];
             try
             {
                 bullet.SetActive(true);
-            }catch(Exception)
+            }
+            catch (Exception)
             {
                 
             }
-
         }
+        else
+        //悪意0でアイテムポップ
+        if (evilPoint <= 0)
+        {
+            //Controllerのターゲットリストから削除
+            con.list.Remove(gameObject);
+            nowState = enemyState[2];
+        }
+
+        print(nowState);
         //ステートによりモード切替
         switch (nowState)
         {
@@ -91,19 +101,15 @@ public class EnemyA : MonoBehaviour {
                 //attack();
                 StartCoroutine(shot());
                 break;
+            case "explode":
+                StartCoroutine(explode());
+                break;
         }
+    }
 
-        //悪意0でアイテムポップ
-        if(evilPoint <= 0)
-        {
-            //非表示、Controllerのターゲットリストから削除
-            gameObject.SetActive(false);
-            con.list.Remove(gameObject);
-
-            //アイテム抽選、アイテムドロップ
-            itemRnd();
-            itemPop();
-        }
+    void OnDisable()
+    {
+        sm.Counter(1);
     }
 
     //徘徊モード
@@ -189,28 +195,37 @@ public class EnemyA : MonoBehaviour {
     private float smashAtk;
     void OnTriggerEnter(Collider c)
     {
-        //音量調整
-        audio.volume = 0.1f;
-
-        jabAtk = con.getJabAtk();
-        smashAtk = con.getSmashAtk();
-        switch (c.tag)
+        try
         {
-            case "Jab":
-                print("Hit Jab");
-                //ジャブのヒット音
-                audio.PlayOneShot(audioSorce[0]);
+            //音量調整
+            audio.volume = 0.1f;
 
-                evilPoint -= jabAtk;
-                break;
-            case "Smash":
-                print("Hit Smash");
-                //スマッシュのヒット音
-                audio.PlayOneShot(audioSorce[1]);
+            jabAtk = con.getJabAtk();
+            smashAtk = con.getSmashAtk();
+            switch (c.tag)
+            {
+                case "Jab":
+                    print("Hit Jab");
+                    //ジャブのヒット音
+                    audio.PlayOneShot(audioSorce[0]);
+                    evilPoint -= jabAtk;
+                    break;
+                case "Smash":
+                    print("Hit Smash");
+                    //スマッシュのヒット音
+                    audio.PlayOneShot(audioSorce[1]);
+                    evilPoint -= smashAtk;
+                    break;
+                case "Hado":
+                    print("Hado");
+                    //スマッシュのヒット音
+                    audio.PlayOneShot(audioSorce[1]);
+                    evilPoint -= smashAtk;
+                    break;
+            }
 
-                evilPoint -= smashAtk;
-                break;
         }
+        catch (Exception) { }
     }
 
     //アイテムドロップ
@@ -224,5 +239,25 @@ public class EnemyA : MonoBehaviour {
     {
         itemTmp = UnityEngine.Random.Range(0, 3);
         return itemTmp;
+    }
+
+    //吹き飛ぶ
+    IEnumerator explode()
+    {
+        // ランダムな吹き飛ぶ力を加える
+        Vector3 force = Vector3.up * 1000f + UnityEngine.Random.insideUnitSphere * 300f;
+        GetComponent<Rigidbody>().AddForce(force);
+
+        // ランダムに吹き飛ぶ回転力を加える
+        Vector3 torque = new Vector3(UnityEngine.Random.Range(-10000f, 10000f), UnityEngine.Random.Range(-10000f, 10000f), UnityEngine.Random.Range(-10000f, 10000f));
+        GetComponent<Rigidbody>().AddTorque(torque);
+
+        // 1秒後に自身を消去する
+        yield return new WaitForSeconds(3.0f);
+        gameObject.SetActive(false);
+        //アイテム抽選、アイテムドロップ
+        itemRnd();
+        itemPop();
+        
     }
 }

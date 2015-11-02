@@ -71,6 +71,13 @@ public class BMIManager : MonoBehaviour {
     public AudioClip[] audioSorce;
     private AudioSource audio;
 
+    //T・FiPエフェクト
+    private ParticleSystem tEffect;
+
+    //波動エフェクト
+    public ParticleSystem hado;
+    public SphereCollider hadoc;
+
     //他のスクリプトでbmi呼ぶ用
     public float getBMI()
     {
@@ -97,10 +104,17 @@ public class BMIManager : MonoBehaviour {
 
         //Tゲージ初期化
         t = 33;
+
+        //コントローラーコンポーネント
         con = player.GetComponent<Controller>();
 
+        //オーディオコンポーネント
         audio = GetComponent<AudioSource>();
+
+        //Tエフェクト
+        tEffect = GameObject.Find("TEffect").GetComponent<ParticleSystem>();
     }
+
 
     void Update () {
         //BMI・Tゲージ監視
@@ -174,31 +188,38 @@ public class BMIManager : MonoBehaviour {
         */
 
         //Tゲージ量によりTレベルの表示非表示
-        if(t > 65)
+        //レベル2
+        if(t > 65 && t < 99)
         {
             tLevel2.SetActive(true);
+            tLevel3.SetActive(false);
             con.setJabAtk(2f);
             con.setSmashAtk(6f);
+            tEffect.emissionRate = 20f;
+            hado.startSize = 2f;
+            hadoc.radius = 0.4f;
         }
-        if(t > 98)
+        //レベル3
+        if (t > 98)
         {
             con.setJabAtk(5f);
             con.setSmashAtk(10f);
             tLevel2.SetActive(true);
             tLevel3.SetActive(true);
+            tEffect.emissionRate = 50f;
+            hado.startSize = 3f;
+            hadoc.radius = 0.5f;
         }
-        if(t < 99)
-        {
-            con.setJabAtk(2f);
-            con.setSmashAtk(6f);
-            tLevel3.SetActive(false);
-        }
-        if ( t < 66)
+        //レベル1
+        if (t < 66)
         {
             con.setJabAtk(1f);
             con.setSmashAtk(3f);
             tLevel2.SetActive(false);
             tLevel3.SetActive(false);
+            tEffect.emissionRate = 5f;
+            hado.startSize = 1f;
+            hadoc.radius = 0.3f;
         }
         Tguage.value = t;
     }
