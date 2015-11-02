@@ -49,6 +49,7 @@ public class StageManager : MonoBehaviour {
     {
         //タイマー関係
         startTime = Time.time;
+        //制限時間
         outTime = 60;
         timer = GameObject.Find("Timer");
 
@@ -92,7 +93,9 @@ public class StageManager : MonoBehaviour {
         //Enemyが全部やられたら
         if(count == 5)
         {
-            audio.clip = audioSorce[0];
+            audio.Stop();
+            //audio.clip = audioSorce[0];
+            //audio.PlayOneShot(audioSorce[0]);
             Instantiate(boss, transform.position, transform.rotation);
             Counter(1);
         }        
@@ -108,15 +111,18 @@ public class StageManager : MonoBehaviour {
     //タイマー書き換え
     void setTimer()
     {
-        parseTime += Time.deltaTime;
-        nowTime = outTime - parseTime;
-        if (nowTime <= 0)
+        if (nowTime >= 0)
         {
-            setResult(false);
-            StartCoroutine(telop());
+            parseTime += Time.deltaTime;
+            nowTime = outTime - parseTime;
+            if (nowTime <= 0)
+            {
+                setResult(false);
+                StartCoroutine(telop());
+            }
+            mathTime(nowTime);
+            timer.GetComponent<Text>().text = "残タイム　" + minuts + ":" + seconds;
         }
-        mathTime(nowTime);
-        timer.GetComponent<Text>().text = "残タイム　" + minuts + ":" + seconds;
     }
 
     //タイマー計算
@@ -156,14 +162,29 @@ public class StageManager : MonoBehaviour {
         if(c == true)
         {
             //クリア
-            audio.clip = audioSorce[1];
+            int i = 0;
+            while (i < 1)
+            {
+                audio.Stop();
+                audio.clip = audioSorce[1];
+                audio.Play();
+                //audio.PlayOneShot(audioSorce[1]);
+                i++;
+            }
             state.setState(GameState.StageClear);
             resultTelop.GetComponent<Text>().text = "ステージクリア";
         }
         else
         {
             //ゲームオーバー
-            audio.clip = audioSorce[2];
+            int i = 0;
+            while (i < 1)
+            {
+                audio.Stop();
+                //audio.clip = audioSorce[2];
+                audio.PlayOneShot(audioSorce[2]);
+                i++;
+            }
             state.setState(GameState.GameOver);
             resultTelop.GetComponent<Text>().text = "ゲームオーバー";
         }

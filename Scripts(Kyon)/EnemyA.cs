@@ -90,7 +90,7 @@ public class EnemyA : MonoBehaviour {
             nowState = enemyState[2];
         }
 
-        print(nowState);
+        //print(nowState);
         //ステートによりモード切替
         switch (nowState)
         {
@@ -107,6 +107,7 @@ public class EnemyA : MonoBehaviour {
         }
     }
 
+    //やられたらカウント。
     void OnDisable()
     {
         sm.Counter(1);

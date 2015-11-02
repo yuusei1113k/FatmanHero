@@ -12,11 +12,16 @@ public class Title : MonoBehaviour {
         audio = GetComponent<AudioSource>();
     }
 
+    private int i = 0;
     void OnGUI()
     {
-        if (Input.GetMouseButtonDown(0))
+        if(i < 1)
         {
-            StartCoroutine(TapToStart());
+            if (Input.GetMouseButtonDown(0))
+            {
+                StartCoroutine(TapToStart());
+                i++;
+            }
         }
     }
 

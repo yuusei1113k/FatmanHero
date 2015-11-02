@@ -104,6 +104,7 @@ public class BMIManager : MonoBehaviour {
 
         //Tゲージ初期化
         t = 33;
+        //t = 99;
 
         //コントローラーコンポーネント
         con = player.GetComponent<Controller>();
@@ -113,6 +114,7 @@ public class BMIManager : MonoBehaviour {
 
         //Tエフェクト
         tEffect = GameObject.Find("TEffect").GetComponent<ParticleSystem>();
+
     }
 
 
@@ -189,7 +191,7 @@ public class BMIManager : MonoBehaviour {
 
         //Tゲージ量によりTレベルの表示非表示
         //レベル2
-        if(t > 65 && t < 99)
+        if(t > 65 && t < 98)
         {
             tLevel2.SetActive(true);
             tLevel3.SetActive(false);
@@ -255,7 +257,7 @@ public class BMIManager : MonoBehaviour {
     }
 
     //スキル
-    public void skill()
+    public void useSkill()
     {
         if (t > 66)
         {
@@ -263,6 +265,7 @@ public class BMIManager : MonoBehaviour {
             audio.PlayOneShot(audioSorce[2]);
             t -= 33;
             con.incBMI(50f);
+            StartCoroutine(con.SkillHundred());
         }
     }
 
