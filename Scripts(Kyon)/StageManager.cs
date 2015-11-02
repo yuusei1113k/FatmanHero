@@ -30,7 +30,7 @@ public class StageManager : MonoBehaviour {
     ScenChanger sc = new ScenChanger();
 
     //エネミー格納
-    public GameObject enemys;
+    public GameObject[] enemys;
 
     //ボス格納
     public GameObject boss;
@@ -41,6 +41,9 @@ public class StageManager : MonoBehaviour {
     //音
     public AudioClip[] audioSorce;
     private AudioSource audio;
+
+    //Enemyやられたカウント
+    public int count = 0;
 
     void Start()
     {
@@ -60,6 +63,13 @@ public class StageManager : MonoBehaviour {
         audio = GetComponent<AudioSource>();
 
         state.setState(GameState.Playing);
+
+        for (int i = 0; i < enemys.Length; i++)
+        {
+            Vector3 enemyPos = new Vector3((float)i, (float)i + 1, (float)i + 2);
+            Instantiate(enemys[i], enemyPos, transform.rotation);
+        } 
+        
     }
 
     void Update()
@@ -70,19 +80,25 @@ public class StageManager : MonoBehaviour {
         //スポナー
         Sporner();
     }
+
+    public void Counter(int i)
+    {
+        count += i;
+        print("Count: " + count);
+    } 
     
     void Sporner()
     {
-        if(enemys.activeSelf == false)
+        //Enemyが全部やられたら
+        if(count == 5)
         {
             audio.clip = audioSorce[0];
-            audio.Stop();
-            audio.Play();
+            Instantiate(boss, transform.position, transform.rotation);
+            Counter(1);
         }        
-        //ボスを倒したかどうか
-        if (boss.activeSelf == false)
+        //Enemy全部とBossがやられたら
+        if (count == 7)
         {
-            print("joge");
             setResult(true);
             StartCoroutine(telop());
         }

@@ -8,6 +8,13 @@ public class StageSelect : MonoBehaviour {
 
     ScenChanger sc = new ScenChanger();
 
+    AudioSource audio;
+
+    void Start()
+    {
+        audio = GetComponent<AudioSource>();
+    }
+
 
     //タイトルボタン
     public void toTitle()
@@ -66,4 +73,5 @@ public class StageSelect : MonoBehaviour {
     {
         sc.toLoading();
     }
+
 }
