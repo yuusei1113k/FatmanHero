@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
+using GameSystems;
 
-public class Button : MonoBehaviour {
+public class Button : MonoBehaviour
+{
 
     //モーダル
     private GameObject modal;
@@ -14,27 +16,35 @@ public class Button : MonoBehaviour {
     //BMIManagerコンポーネント
     BMIManager bmiManager;
 
-    StageManager stage;
+    State state = new State();
+
+    ScenChanger sc = new ScenChanger();
+
+    private ParticleSystem tEffect;
 
     void Start()
     {
         //モーダル取得・非表示
-        modal = GameObject.Find("Modal");
-        print(modal);
+        modal = GameObject.Find("PauseModal");
+        //print(modal);
         modal.SetActive(false);
 
         //BMIManagerコンポーネント
         bmiManager = FindObjectOfType<BMIManager>();
-        stage = FindObjectOfType<StageManager>();
 
         //初期化
         tfip = false;
         pushButton = false;
+
+        tEffect = GameObject.Find("TEffect").GetComponent<ParticleSystem>();
+
+        tEffect.Stop();
+
     }
 
     public void buttonTrue()
     {
-        if(pushButton == false)
+        if (pushButton == false)
         {
             pushButton = true;
         }
@@ -53,13 +63,13 @@ public class Button : MonoBehaviour {
     {
         print("Push");
         //ポーズ中でなければ
-        if(stage.getPause() == false)
+        if (state.getState() == GameState.Playing)
         {
             //時間を止めてモーダルを出す
             Time.timeScale = 0f;
             print("timeScale = 0");
-            stage.setPause(true);
-            modal.SetActiveRecursively(true);
+            state.setState(GameState.Pausing);
+            modal.SetActive(true);
         }
         //ポーズ中だったら
         else
@@ -67,45 +77,77 @@ public class Button : MonoBehaviour {
             //時間を動かしモーダルを消す
             Time.timeScale = 1.0f;
             modal.SetActive(false);
-            stage.setPause(false);
+            state.setState(GameState.Playing);
         }
     }
 
+    //タイトルボタン
+    public void toTitle()
+    {
+        sc.toTitle();
+    }
+
+    //取得用ボタンを押しているかどうか
     public bool getPushButton()
     {
         return pushButton;
     }
-    
+
     //T・FiPボタン
     public void startTFiP()
     {
-        //T・FiPが発動してなければ
-        if (tfip == false)
+        if (state.getState() == GameState.Playing)
         {
-            //発動
-            tfip = true;
-        }
-        //T・FiPが波動中だったら
-        else
-        {
-            //停止
-            tfip = false;
+            //T・FiPが発動してなければ
+            if (tfip == false)
+            {
+                //発動
+                tfip = true;
+                tEffect.Play();
+            }
+            //T・FiPが波動中だったら
+            else
+            {
+                //停止
+                tEffect.Stop();
+                tfip = false;
+            }
         }
     }
 
     //スキルボタン
     public void useSkill()
     {
-        //BMIManagerコンポーネントのスキルを発動
-        bmiManager.skill();
+        if (state.getState() == GameState.Playing)
+        {
+            //BMIManagerコンポーネントのスキルを発動
+            bmiManager.useSkill();
+        }
     }
 
-    
+
     void Update()
     {
-        if(tfip == true)
+        if (tfip == true)
         {
             bmiManager.tFiP();
+        }
+    }
+
+    //ポーズAndroid用
+    void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            //ホームボタンを押してアプリがバックグランドに移行した時
+            state.setState(GameState.Playing);
+            pushPause();
+            Debug.Log("バックグランドに移行したよ");
+        }
+        else
+        {
+            //アプリを終了しないでホーム画面からアプリを起動して復帰した時
+            Debug.Log("バックグランドから復帰したよ");
         }
     }
 }

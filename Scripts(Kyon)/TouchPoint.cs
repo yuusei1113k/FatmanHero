@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using StageState;
+using GameSystems;
 
 public class TouchPoint : MonoBehaviour {
 
     //タッチパッドの範囲
     public GameObject panel;
-
-    //Flick!!の文字
-    public GameObject flick;
 
     //タッチした場所
     public GameObject touchPad;
@@ -18,9 +15,6 @@ public class TouchPoint : MonoBehaviour {
     //スライドしてる場所
     public GameObject slidePad;
     private Vector2 slidePoint;
-
-    //Stageコンポーネント
-    StageManager stage;
 
     //タッチ制限値
     float minX;
@@ -42,14 +36,14 @@ public class TouchPoint : MonoBehaviour {
     Image panelImage;
     Color panelColor;
 
+    //Buttonコンポーネント
     Button button;
+
+    State state = new State();
 
     void Start () {
         //PanelのImageコンポーネント
         panelImage = panel.GetComponent<Image>();
-        //Stageコンポーネント
-        stage = FindObjectOfType<StageManager>();
-        print(stage);
         //Controllerコンポーネント取得
         controller = FindObjectOfType<Controller>();
         button = FindObjectOfType<Button>();
@@ -57,7 +51,6 @@ public class TouchPoint : MonoBehaviour {
         //タッチパッド非表示
         touchPad.SetActive(false);
         slidePad.SetActive(false);
-        flick.SetActive(false);
     }
 
     void Update()
@@ -68,11 +61,9 @@ public class TouchPoint : MonoBehaviour {
         if (controller.getFlick() == true)
         {
             print("Flick!");
-            flick.SetActive(true);
         }
         else
         {
-            flick.SetActive(false);
         }
         //タッチパッド作成可能領域の指定
         if (Input.GetMouseButtonDown(0))
@@ -83,16 +74,14 @@ public class TouchPoint : MonoBehaviour {
             y = Input.mousePosition.y;
         }
         
-        //ポーズ中かどうか
-        pause = stage.getPause();
         //ポーズ中なら作らない
-        if ( button.getPushButton() == false && button.getPushButton() == false)
+        if ( button.getPushButton() == false && state.getState() == GameState.Playing)
         {
              createPad();
         }
         else
         {
-            print("hoge");
+            print("PauseNow or PushButtonNow");
         }
     }
 
@@ -130,7 +119,6 @@ public class TouchPoint : MonoBehaviour {
 
             //タッチパッドをタッチ地点に移動
             slidePad.transform.position = slidePoint;
-            flick.transform.position = slidePoint;
 
             //タッチパッド表示
             slidePad.SetActive(true);

@@ -1,8 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using GameSystems;
 
 public class BMIManager : MonoBehaviour {
+
+    //BMIを減らすスピードを変える
+    public float bmiDecrement = 1f;
+
+    //T・FiPを増やすスピードを変える
+    public float tIncrement = 1f;
+
 
     //BMIゲージ(slider)
     private Slider BMIguage;
@@ -30,7 +38,7 @@ public class BMIManager : MonoBehaviour {
         A = 255
     */
 
-        //Tゲージ(slider)
+    //Tゲージ(slider)
     private Slider Tguage;
 
     //Tゲージレベル
@@ -49,10 +57,7 @@ public class BMIManager : MonoBehaviour {
     private float bmi;
 
     //Tゲージ
-    private int t;
-
-    //TFiP変換スピード調整用
-    public int tSpeed = 1;
+    private float t;
 
     //bmiカウンター
     private float bmiCounter = 0;
@@ -60,8 +65,18 @@ public class BMIManager : MonoBehaviour {
     //StageManatgerコンポーネント
     StageManager stage;
 
-    //SceneChangerコンポーネント
-    SceneChanger scene;
+    //StageSelectコンポーネント
+    ScenChanger sc = new ScenChanger();
+
+    public AudioClip[] audioSorce;
+    private AudioSource audio;
+
+    //T・FiPエフェクト
+    private ParticleSystem tEffect;
+
+    //波動エフェクト
+    public ParticleSystem hado;
+    public SphereCollider hadoc;
 
     //他のスクリプトでbmi呼ぶ用
     public float getBMI()
@@ -82,15 +97,26 @@ public class BMIManager : MonoBehaviour {
 
         //Stageコンポーネント取得
         stage = FindObjectOfType<StageManager>();
-        print(stage);
-        scene = FindObjectOfType<SceneChanger>();
+        //print(stage);
 
         //BMIguage初期化
         bmi = 200.0f;
 
         //Tゲージ初期化
         t = 33;
+        //t = 99;
+
+        //コントローラーコンポーネント
+        con = player.GetComponent<Controller>();
+
+        //オーディオコンポーネント
+        audio = GetComponent<AudioSource>();
+
+        //Tエフェクト
+        tEffect = GameObject.Find("TEffect").GetComponent<ParticleSystem>();
+
     }
+
 
     void Update () {
         //BMI・Tゲージ監視
@@ -98,17 +124,22 @@ public class BMIManager : MonoBehaviour {
         changeTguage();
 	}
 
+    public GameObject player;
+    private Controller con;
     //BMIゲージの色・値変更
     public void changeBMIguage()
     {
+        //プレイヤーからBMIの値をとってくる
+        bmi = con.getBMI();
+
         //デバッグ用ゲージ上昇・200で0になる
         
         //bmi -= 1.0f;
-        /*
-        if (bmi > 200)
+        //BMIの上限値を設定
+        if (bmi > 200f)
         {
-            bmi = 0;
-        }*/
+            con.setBMI(200f);
+        }
         
 
         //色変化
@@ -138,6 +169,7 @@ public class BMIManager : MonoBehaviour {
         if(bmi <= 0)
         {
             stage.setResult(false);
+            sc.toResult();
         }
     }
 
@@ -158,23 +190,38 @@ public class BMIManager : MonoBehaviour {
         */
 
         //Tゲージ量によりTレベルの表示非表示
-        if(t > 65)
+        //レベル2
+        if(t > 65 && t < 98)
         {
             tLevel2.SetActive(true);
+            tLevel3.SetActive(false);
+            con.setJabAtk(2f);
+            con.setSmashAtk(6f);
+            tEffect.emissionRate = 20f;
+            hado.startSize = 2f;
+            hadoc.radius = 0.4f;
         }
-        if(t > 98)
+        //レベル3
+        if (t > 98)
         {
+            con.setJabAtk(5f);
+            con.setSmashAtk(10f);
             tLevel2.SetActive(true);
             tLevel3.SetActive(true);
+            tEffect.emissionRate = 50f;
+            hado.startSize = 3f;
+            hadoc.radius = 0.5f;
         }
-        if(t < 99)
+        //レベル1
+        if (t < 66)
         {
-            tLevel3.SetActive(false);
-        }
-        if ( t < 66)
-        {
+            con.setJabAtk(1f);
+            con.setSmashAtk(3f);
             tLevel2.SetActive(false);
             tLevel3.SetActive(false);
+            tEffect.emissionRate = 5f;
+            hado.startSize = 1f;
+            hadoc.radius = 0.3f;
         }
         Tguage.value = t;
     }
@@ -182,29 +229,82 @@ public class BMIManager : MonoBehaviour {
     //T・FiP
     public void tFiP()
     {
-        if(t < 99)
+        audio.volume = 0.05f;
+        if (t < 99)
         {
-            bmiCounter += 1f;
-            bmi -= 0.1f;
-            print(BMIguage.value);
-            print("BMICounter: " + bmiCounter);
+            if(t < 66)
+            {
+                audio.pitch = 0.5f;
+                audio.PlayOneShot(audioSorce[1]);
+            }
+            else if (t < 99)
+            {
+                audio.pitch = 1.0f;
+                audio.PlayOneShot(audioSorce[1]);
+            }
+            con.incBMI(-0.3f * bmiDecrement);
             if(bmiCounter % 5f == 0f)
             {
-                t += 1;
-                //print("T: " + t);
+                t += (0.2f * tIncrement);
             }
         }
+        else if (t >= 99)
+        {
+            audio.pitch = 2.0f;
+            audio.PlayOneShot(audioSorce[1]);
+        }
+
     }
 
     //スキル
-    public void skill()
+    public void useSkill()
     {
         if (t > 66)
         {
-            bmiCounter = 0;
+            audio.volume = 0.1f;
+            audio.PlayOneShot(audioSorce[2]);
             t -= 33;
-            bmi = 200.0f;
+            con.incBMI(50f);
+            StartCoroutine(con.SkillHundred());
         }
+    }
 
+    private float healPoint;
+    //BMIゲージ回復
+    public float BMIUP(int itemName)
+    {
+        audio.volume = 0.5f;
+        audio.PlayOneShot(audioSorce[3]);
+        Debug.Log("ゲージ回復前" + bmi);
+        switch (itemName)
+        {
+            case 0:
+                print("おむすび");
+                healPoint = 5f;
+                break;
+            case 1:
+                print("コーラ");
+                healPoint = 10f;
+                break;
+            case 2:
+                print("ポテチ");
+                healPoint = 20f;
+                break;
+            case 3:
+                print("肉まん");
+                healPoint = 30f;
+                break;
+            case 4:
+                print("ピザ");
+                healPoint = 50f;
+                break;
+            default:
+                healPoint = 0;
+                break;
+        }
+        Debug.Log("ヒールポイント：" + healPoint);
+        con.incBMI(healPoint);
+        Debug.Log("ゲージ回復後" + bmi);
+        return bmi;
     }
 }

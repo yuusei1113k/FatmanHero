@@ -1,23 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
-using StageState;
+using GameSystems;
 
 public class Option : MonoBehaviour {
 
-    private GameObject optionPanel;
+    public GameObject optionPanel;
+
+    State state = new State();
 
     void Start()
     {
         optionPanel = GameObject.Find("OptionPanel");
-        print(optionPanel);
+        optionPanel.SetActive(false);
     }
 
     //オプション
     public void openOption()
     {
-        State state = new State(GameState.Pausing);
-        optionPanel.SetActiveRecursively(true);
-        
+        state.setState(GameState.Pausing);
+        print(state.getState());
+        optionPanel.SetActive(true);
+        //optionPanel.SetActiveRecursively(true);
+
     }
 
     //オプション閉じる
