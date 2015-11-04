@@ -9,7 +9,10 @@ public class Title : MonoBehaviour {
 
     void Start()
     {
+<<<<<<< HEAD
         i = 0;
+=======
+>>>>>>> dca2acb682ec438d08fb2d2ac7efe153879fce2b
         audio = GetComponent<AudioSource>();
     }
 
