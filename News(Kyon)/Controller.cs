@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class Controller : MonoBehaviour {
+<<<<<<< HEAD
 	
 	//移動判定かどうか
 	private bool moveOk;
@@ -14,6 +15,17 @@ public class Controller : MonoBehaviour {
 	
 	//フリック用フリックなのか判定
 	private bool flickOk;
+=======
+
+    //移動判定かどうか
+    private bool moveOk = false;
+	
+	//タップ判定かどうか
+	private bool tapOk = false;
+	
+	//フリック用フリックなのか判定
+	private bool flickOk = false;
+>>>>>>> remotes/origin/kyon
 
 	//プレイヤーの移動が逆になってしまった時用
 	public bool reverse = false;
@@ -63,6 +75,19 @@ public class Controller : MonoBehaviour {
     //更生力
     private float attack;
 
+<<<<<<< HEAD
+=======
+    //アクションカウント
+    private int tapCount = 0;
+
+    //オーディオソース
+    public AudioClip[] audioSorce;
+    private AudioSource audio;
+
+    //波動
+    public GameObject hado;
+
+>>>>>>> remotes/origin/kyon
 
     void Start () {
 		//攻撃判定オフ
@@ -71,6 +96,14 @@ public class Controller : MonoBehaviour {
         //モーションをいじるため
         anim = GetComponent<Animator>();
 
+<<<<<<< HEAD
+=======
+        //オーディオソースコンポーネント
+        audio = GetComponent<AudioSource>();
+
+        //波動非表示
+        hado.SetActive(false);
+>>>>>>> remotes/origin/kyon
     }
 
     void Update () {
@@ -154,6 +187,7 @@ public class Controller : MonoBehaviour {
 					
 					//キャラクターを向かせる
 					transform.rotation = Quaternion.RotateTowards(transform.rotation, to, rotationSpeed * Time.deltaTime);
+<<<<<<< HEAD
 					
 					//タッチされた座標をワールドの座標に変換
 					cm = Camera.main.ScreenToWorldPoint(direction);
@@ -167,6 +201,15 @@ public class Controller : MonoBehaviour {
                     //print(moveTo);
                     //print(transform.TransformPoint(moveTo));
                     //print(transform.position);
+=======
+
+                    //反転用
+                    if (reverse == true)
+					{
+						direction = new Vector3(-direction.x, 0, -direction.z);
+					}
+
+>>>>>>> remotes/origin/kyon
 					//移動
 					transform.Translate(direction.normalized * 0.1f * speed, Space.World);
 				}
@@ -195,12 +238,19 @@ public class Controller : MonoBehaviour {
 				print("Flick");
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.deltaTime);
 				
+<<<<<<< HEAD
 				//瞬間移動
 				cm = Camera.main.ScreenToWorldPoint(direction);
 				moveTo = new Vector3(cm.x, 0, cm.z);
 				if (reverse == true)
 				{
 					moveTo = new Vector3(cm.x * -1, 0, cm.z * -1);
+=======
+				//反転用
+				if (reverse == true)
+				{
+					direction = new Vector3(-direction.x, 0, direction.z);
+>>>>>>> remotes/origin/kyon
 				}
 				
 				transform.Translate(direction * 100, Space.World);
@@ -208,12 +258,18 @@ public class Controller : MonoBehaviour {
 				//print(flickOk);
 			}
 		}
+<<<<<<< HEAD
 		
 		//タップアクション
+=======
+
+        //タップアクション
+>>>>>>> remotes/origin/kyon
 		if(tapOk == true)
 		{
 			if (Input.GetMouseButtonUp(0))
 			{
+<<<<<<< HEAD
 				//print("TouchiTime: " + touchTime);
 				print("Tap");
                 anim.SetBool("Move", false);
@@ -221,20 +277,52 @@ public class Controller : MonoBehaviour {
                 //print("animtag: " + anim.GetParameter(0));
                 tapOk = false;
 				//print(tapOk);
+=======
+				print("Tap");
+                tapCount++;
+                anim.SetBool("Move", false);
+                anim.SetTrigger("Attack");
+                StartCoroutine(Hado());
+                //攻撃モーション時に全身
+                if(tapCount / 3 != 1)
+                {
+                    transform.Translate(transform.forward * 2 * Time.deltaTime);
+                }
+                else
+                {
+                    transform.Translate(transform.forward / 10);
+                    tapCount = 0;
+                }
+                tapOk = false;
+>>>>>>> remotes/origin/kyon
 			}
 		}
 	}
 
     /*
+<<<<<<< HEAD
+=======
+    探知機: Sphere Collider, Center(0, 1, 0), Radius(3), Is Trigger(On)
+>>>>>>> remotes/origin/kyon
     探知機に当たった物体を格納するコレクション
     Key  : 接触GameObject 
     Value: プレイヤーとの距離
     */
+<<<<<<< HEAD
     Dictionary<GameObject, float> list = new Dictionary<GameObject, float>();
     void OnTriggerStay(Collider c)
     {
         //Enemyタグがついたオブジェクトのみコレクションに格納
         if(c.tag == "Enemy")
+=======
+    public Dictionary<GameObject, float> list = new Dictionary<GameObject, float>();
+    void OnTriggerStay(Collider c)
+    {
+        float min = 10f;
+        //print("OnTri: " + c);
+        //Enemyタグがついたオブジェクトのみコレクションに格納
+        if (c.tag == "Enemy" || c.tag == "Boss")
+>>>>>>> remotes/origin/kyon
         {
             if (list.ContainsKey(c.gameObject) == false)
             {
@@ -248,6 +336,7 @@ public class Controller : MonoBehaviour {
             }
 
             //コレクションの中で最も近いGameObjectに向く
+<<<<<<< HEAD
             float min = 10f;
             foreach(var val in list)
             {
@@ -261,12 +350,137 @@ public class Controller : MonoBehaviour {
             }
 
         }
+=======
+            foreach(var val in list)
+            {
+                min = val.Value;
+                //プレイヤーに近い方に向く
+                if (min >= val.Value)
+                {
+                    Transform target = val.Key.gameObject.transform;
+                    //print("target: " + target);
+                    transform.LookAt(target);
+                }
+            }
+        }
+        //敵の攻撃にあったたら
+        if (c.gameObject.name == "Bullet")
+        {
+            print("Bullet");
+            bmi -= 30f;
+            c.gameObject.SetActive(false);
+            Destroy(c.gameObject);
+        }
+
+>>>>>>> remotes/origin/kyon
     }
 
     //離れたらコレクションから削除
     void OnTriggerExit(Collider c)
     {
+<<<<<<< HEAD
         list.Remove(c.gameObject);
+=======
+        if (list.ContainsKey(c.gameObject))
+        {
+            list.Remove(c.gameObject);
+        }
+    }
+    //BMI外用
+    public float bmi = 200f;
+    //取得
+    public float getBMI()
+    {
+        return bmi;
+    }
+    //セット
+    public void setBMI(float f)
+    {
+        bmi = f;
+    }
+    //足す
+    public void incBMI(float f)
+    {
+        bmi += f;
+    }
+
+    //更生力 外用
+    private float jabAtk = 1f;
+    private float smashAtk = 3f;
+    //取得
+    public float getJabAtk()
+    {
+        return jabAtk;
+    }
+    public float getSmashAtk()
+    {
+        return smashAtk;
+    }
+    //セット
+    public void setJabAtk(float f)
+    {
+        jabAtk = f;
+    }
+    public void setSmashAtk(float f)
+    {
+        smashAtk = f;
+    }
+
+    //タップ時波動エフェクトを出す
+    IEnumerator Hado()
+    {
+        hado.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        hado.SetActive(false);
+        yield break;
+    }
+
+    //スキル
+    //回転
+    public GameObject skillRound;
+    public GameObject skillHundred;
+    public GameObject skillHundredRound;
+    public IEnumerator SkillRound()
+    {
+        int i = 0;
+        while (true)
+        {
+            i++;
+            //print("Skill");
+            skillRound.SetActive(true);
+            skillRound.transform.RotateAround(transform.position, new Vector3(0f, 10f), 30f);
+            yield return new WaitForFixedUpdate();
+            if (i >= 200)
+            {
+                print("i >= 50");
+                skillRound.SetActive(false);
+                StopCoroutine(SkillRound());
+                yield break;
+            }
+        }
+    }
+
+    //百裂拳
+    public IEnumerator SkillHundred()
+    {
+        int i = 0;
+        while (true)
+        {
+            i++;
+            //print("Skill");
+            skillHundred.SetActive(true);
+            transform.Translate(transform.forward * 2 * Time.deltaTime);
+            skillHundredRound.transform.RotateAround(transform.position, new Vector3(0f, 10f), 90f);
+            yield return new WaitForFixedUpdate();
+            if (i >= 200)
+            {
+                print("i >= 50");
+                skillHundred.SetActive(false);
+                StopCoroutine(SkillHundred());
+                yield break;
+            }
+        }
+>>>>>>> remotes/origin/kyon
     }
 
 }
