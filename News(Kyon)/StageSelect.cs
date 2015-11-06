@@ -87,7 +87,7 @@ public class StageSelect : MonoBehaviour {
     public void stage03()
     {
         sc.setStage(StageName.Stage3);
-        if (cs.getClearedStages()[StageName.Stage2] == 1)
+        if (cs.getClearedStages()[StageName.Stage1] == 1 && cs.getClearedStages()[StageName.Stage2] == 1)
         {
             StartCoroutine(loadingCoroutine());
         }
@@ -115,6 +115,13 @@ public class StageSelect : MonoBehaviour {
     public void retry()
     {
         StartCoroutine(loadingCoroutine());
+    }
+
+    //初期化ボタン
+    public void clearData()
+    {
+        PlayerPrefs.DeleteAll();
+        print("初期化");
     }
 
 

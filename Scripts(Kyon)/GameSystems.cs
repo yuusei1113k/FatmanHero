@@ -43,6 +43,7 @@ namespace GameSystems{
         State state = new State();
         //選択ステージ
         private static StageName currentStage;
+
         //取得用
         public StageName getStageName()
         {
