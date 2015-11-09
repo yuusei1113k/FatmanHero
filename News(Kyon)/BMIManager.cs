@@ -101,6 +101,8 @@ public class BMIManager : MonoBehaviour {
         return bmi;
     }
 
+	private Button[] screenButton = new Button[3];
+
 
     void Start () {
         //BMIゲージ(slider)を取得する
