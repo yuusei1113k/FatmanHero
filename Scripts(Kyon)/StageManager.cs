@@ -43,7 +43,7 @@ public class StageManager : MonoBehaviour {
 	private AudioSource audio;
 	
 	//Enemyやられたカウント
-	public int count = 0;
+	private int count = 0;
 	
 	private int t ;
 	private int k ;

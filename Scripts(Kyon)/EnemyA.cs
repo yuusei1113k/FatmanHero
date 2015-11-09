@@ -30,7 +30,7 @@ public class EnemyA : MonoBehaviour
 
     //アイテム関連
     public GameObject[] item;
-    public int itemTmp;
+    private int itemTmp;
 
     //音
     public AudioClip[] audioSorce;
@@ -43,7 +43,7 @@ public class EnemyA : MonoBehaviour
     Animator anim;
 
     //波動
-    public GameObject hado;
+    private GameObject hado;
 
     //プレイヤーの更生力
     private float jabAtk;
@@ -57,6 +57,9 @@ public class EnemyA : MonoBehaviour
         //プレイヤー取得
         player = GameObject.FindGameObjectWithTag("Player");
         con = player.GetComponent<Controller>();
+
+        //波動
+        hado = transform.GetChild(4).gameObject;
 
         //徘徊モードにする
         nowState = enemyState[0];
@@ -72,7 +75,7 @@ public class EnemyA : MonoBehaviour
 
         //アニメーション
         anim = GetComponent<Animator>();
-
+        //アニメーターレイヤー指定
         anim.SetLayerWeight(1, 1f);
 
     }

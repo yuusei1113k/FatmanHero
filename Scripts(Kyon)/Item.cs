@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Item : MonoBehaviour
 {
 
-    public EnemyA enemy;
+    private EnemyA enemy;
 
     private BMIManager bmiManager;
 
@@ -14,6 +14,7 @@ public class Item : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyA>();
         bmiManager = GameObject.Find("BMIManager").GetComponent<BMIManager>();
 
         parentEnemy = GameObject.Find("Enemy");
@@ -32,7 +33,8 @@ public class Item : MonoBehaviour
     //アイテムを取った際のメソッド
     void OnTriggerEnter(Collider c)
     {
-        if (c.gameObject.tag == "Player")
+        BoxCollider b = c.gameObject.GetComponent<BoxCollider>();
+        if (c.gameObject.tag == "Player" && b == c)
         {
             bmiManager.BMIUP(int.Parse(name));
             Destroy(gameObject);

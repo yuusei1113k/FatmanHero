@@ -41,8 +41,8 @@ public class BMIManager : MonoBehaviour {
     private Slider Tguage;
 
     //Tゲージレベル
-    public GameObject tLevel2;
-    public GameObject tLevel3;
+    private GameObject tLevel2;
+    private GameObject tLevel3;
 
     /*
         オレンジ#FFBA05FF
@@ -74,8 +74,9 @@ public class BMIManager : MonoBehaviour {
     private ParticleSystem tEffect;
 
     //波動エフェクト
-    public ParticleSystem hado;
-    public SphereCollider hadoc;
+    private ParticleSystem hado;
+    private SphereCollider hadoc;
+
     //ソニックブーム
     private GameObject SonicBody;
     private GameObject SonicSatellite;
@@ -95,7 +96,7 @@ public class BMIManager : MonoBehaviour {
     bool skillOn = false;
     
     //プレイヤーとコントローラー
-    public GameObject player;
+    private GameObject player;
     private Controller con;
 
 
@@ -107,6 +108,13 @@ public class BMIManager : MonoBehaviour {
 
 
     void Start () {
+        //プレイヤー
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        //波動
+        hado = player.transform.GetChild(3).gameObject.GetComponent<ParticleSystem>();
+        hadoc = hado.GetComponent<SphereCollider>();
+
         //BMIゲージ(slider)を取得する
         BMIguage = GameObject.Find("BMIguage").GetComponent<Slider>();
 
@@ -115,6 +123,8 @@ public class BMIManager : MonoBehaviour {
 
         //Tゲージ(slider)を取得する
         Tguage = GameObject.Find("Tguage").GetComponent<Slider>();
+        tLevel2 = GameObject.Find("TLevel2");
+        tLevel3 = GameObject.Find("TLevel3");
 
         //Stageコンポーネント取得
         stage = FindObjectOfType<StageManager>();

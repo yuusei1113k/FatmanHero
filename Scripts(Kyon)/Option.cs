@@ -4,7 +4,7 @@ using GameSystems;
 
 public class Option : MonoBehaviour {
 
-    public GameObject optionPanel;
+    private GameObject optionPanel;
 
     State state = new State();
 
