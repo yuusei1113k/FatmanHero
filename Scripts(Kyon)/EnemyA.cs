@@ -45,6 +45,13 @@ public class EnemyA : MonoBehaviour
     //波動
     public GameObject hado;
 
+    //プレイヤーの更生力
+    private float jabAtk;
+    private float smashAtk;
+    private bool attackOk;
+
+    public float evilPoint = 25f;
+
     void Start()
     {
         //プレイヤー取得
@@ -124,7 +131,6 @@ public class EnemyA : MonoBehaviour
                 break;
         }
     }
-    private bool attackOk;
 
     //やられたらカウント。
     void OnDisable()
@@ -167,7 +173,6 @@ public class EnemyA : MonoBehaviour
 
 
     //悪意（体力）外用
-    public float evilPoint = 25f;
     public float getEvil()
     {
         return evilPoint;
@@ -177,9 +182,6 @@ public class EnemyA : MonoBehaviour
         evilPoint += e;
     }
 
-    //プレイヤーの更生力
-    private float jabAtk;
-    private float smashAtk;
     void OnTriggerEnter(Collider c)
     {
         try
@@ -205,13 +207,30 @@ public class EnemyA : MonoBehaviour
                     evilPoint -= smashAtk;
                     break;
                 case "Hado":
-                    print("Hado");
+                    print("Hit Hado");
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk;
                     break;
+                case "Sonic":
+                    print("Hit Sonic");
+                    //ジャブのヒット音
+                    audio.PlayOneShot(audioSorce[0]);
+                    evilPoint -= jabAtk;
+                    break;
+                case "Rush":
+                    print("Hit Rush");
+                    //ジャブのヒット音
+                    audio.PlayOneShot(audioSorce[0]);
+                    evilPoint -= jabAtk * 2;
+                    break;
+                case "Havoc":
+                    print("Hit Havoc");
+                    //スマッシュのヒット音
+                    audio.PlayOneShot(audioSorce[1]);
+                    evilPoint -= smashAtk * 3;
+                    break;
             }
-
         }
         catch (Exception) { }
     }

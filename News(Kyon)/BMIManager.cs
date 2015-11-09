@@ -84,7 +84,6 @@ public class BMIManager : MonoBehaviour {
     //百烈拳
     private GameObject HundredField;
     private GameObject HundredJab;
-    Vector3 HundredJabPos;
     bool hundred = false;
 
     //グランドハボック
@@ -94,6 +93,11 @@ public class BMIManager : MonoBehaviour {
     int i = 0;
     float skilTime = 0f;
     bool skillOn = false;
+    
+    //プレイヤーとコントローラー
+    public GameObject player;
+    private Controller con;
+
 
     //他のスクリプトでbmi呼ぶ用
     public float getBMI()
@@ -123,7 +127,7 @@ public class BMIManager : MonoBehaviour {
         //bmi = 100f;
         //Tゲージ初期化
         t = 33;
-        t = 99;
+        //t = 99;
 
         //コントローラーコンポーネント
         con = player.GetComponent<Controller>();
@@ -133,12 +137,13 @@ public class BMIManager : MonoBehaviour {
 
         //Tエフェクト
         tEffect = GameObject.Find("TEffect").GetComponent<ParticleSystem>();
+
+        //スキル関係
         SonicBody = GameObject.Find("SonicBody");
         SonicSatellite = GameObject.Find("SonicSatellite");
         HundredField = GameObject.Find("HundredField");
         HundredJab = GameObject.Find("HundredJab");
         Havoc = GameObject.Find("HavocField");
-        HundredJabPos = HundredJab.transform.position;
         HundredField.SetActive(false);
         SonicBody.SetActive(false);
         Havoc.SetActive(false);
@@ -152,17 +157,12 @@ public class BMIManager : MonoBehaviour {
         changeTguage();
 	}
 
-    public GameObject player;
-    private Controller con;
     //BMIゲージの色・値変更
     public void changeBMIguage()
     {
         //プレイヤーからBMIの値をとってくる
         bmi = con.getBMI();
 
-        //デバッグ用ゲージ上昇・200で0になる
-        
-        //bmi -= 1.0f;
         //BMIの上限値を設定
         if (bmi > 200f)
         {
@@ -204,19 +204,6 @@ public class BMIManager : MonoBehaviour {
     //Tゲージ
     public void changeTguage()
     {
-        //デバッグ用Tゲージ上昇
-        /*
-        if (Input.GetMouseButton(0))
-        {
-            t++;
-            //print("t: " + t);
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            t = 33;
-        }
-        */
-
         //Tゲージ量によりTレベルの表示非表示
         //レベル2
         if(t > 65 && t < 98)
@@ -331,7 +318,7 @@ public class BMIManager : MonoBehaviour {
                 havoc = true;
                 audio.volume = 0.1f;
                 audio.PlayOneShot(audioSorce[2]);
-                //t -= 66;
+                t -= 66;
                 StartCoroutine(SkillHavoc());
             }
         }
@@ -340,16 +327,16 @@ public class BMIManager : MonoBehaviour {
     IEnumerator SkillSonic()
     {
         skillOn = true;
-        SonicBody.transform.position = new Vector3(0f, 2f, 2f);
+        SonicBody.transform.position = new Vector3(player.transform.position.x, -2f, player.transform.position.z);
+        SonicBody.transform.forward = player.transform.forward;
         SonicBody.SetActive(true);
         while (sonic == true)
         {
             skilTime = Time.deltaTime;
-            //print(i);
             i++;
-            SonicBody.transform.Translate(transform.forward / 10);
+            SonicBody.transform.Translate(SonicBody.transform.forward / 10);
             SonicSatellite.transform.RotateAround(SonicBody.transform.position, new Vector3(0, 10f), 30f);
-            yield return new WaitForSeconds(0.03f);
+            yield return new WaitForSeconds(0.01f);
             if (i > 100)
             {
                 sonic = false;
@@ -360,28 +347,26 @@ public class BMIManager : MonoBehaviour {
         skilTime = 0f;
         SonicBody.transform.position = new Vector3(0f, 2f, 2f);
         SonicBody.SetActive(false);
-        yield return new WaitForSeconds(3.0f);
         skillOn = false;
         yield break;
     }
     //百烈拳本体
     IEnumerator SkillHundred()
     {
+        HundredField.transform.position = player.transform.position;
+        HundredJab.transform.position = HundredField.transform.position;
         skillOn = true;
         while (hundred == true)
         {
             skilTime += Time.deltaTime;
-            //print(i);
             i++;
-            HundredJabPos = new Vector3(Random.Range(-1f, 1f), Random.Range(-1.5f, 3f), 2.4f);
-            HundredJab.transform.position = HundredJabPos;
+            HundredJab.transform.position = new Vector3(player.transform.position.x + Random.Range(-1f, 2f), player.transform.position.y + Random.Range(1f, 2f), player.transform.position.z + Random.Range(-1f, 2f));
             HundredField.SetActive(true);
             HundredJab.SetActive(true);
             yield return new WaitForSeconds(0.03f);
             HundredJab.SetActive(false);
             if (i > 100)
             {
-                print("i > 100");
                 HundredField.SetActive(false);
                 hundred = false;
             }
@@ -389,18 +374,19 @@ public class BMIManager : MonoBehaviour {
         i = 0;
         //print("skillTime: " + skilTime);
         skilTime = 0f;
-        yield return new WaitForSeconds(3.0f);
         skillOn = false;
         yield break;
     }
     //グランドハボック本体
     IEnumerator SkillHavoc()
     {
+        ParticleSystem havocP = Havoc.GetComponent<ParticleSystem>();
+        Havoc.transform.localScale = Havoc.transform.localScale;
+        Havoc.transform.position = player.transform.position;
         skillOn = true;
         while (havoc == true)
         {
             skilTime += Time.deltaTime;
-            //print(i);
             i++;
             Havoc.SetActive(true);
             yield return new WaitForSeconds(1.0f);
@@ -408,14 +394,12 @@ public class BMIManager : MonoBehaviour {
             yield return new WaitForSeconds(1.0f);
             if (i > 2)
             {
-                print("i > 2");
                 havoc = false;
             }
         }
         i = 0;
         //print("skillTime: " + skilTime);
         skilTime = 0f;
-        yield return new WaitForSeconds(3.0f);
         skillOn = false;
         yield break;
     }
