@@ -186,6 +186,10 @@ public class EnemyA : MonoBehaviour
     {
         try
         {
+        
+      		hit = new Vector3 (transform.position.x, transform.position.y + 1.5f, transform.position.z - 0.5f);
+			Transform camera = GameObject.Find("Camera").transform;
+			hitefect.transform.LookAt(camera);
             //音量調整
             audio.volume = 0.1f;
 
