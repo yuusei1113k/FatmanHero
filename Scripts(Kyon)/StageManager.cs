@@ -30,7 +30,8 @@ public class StageManager : MonoBehaviour {
 	ScenChanger sc = new ScenChanger();
 	
 	//エネミー格納
-	public GameObject[] enemys;
+	private GameObject[] enemys = new GameObject[3];
+    int j = 1;
 	
 	//ボス格納
 	public GameObject boss;
@@ -43,7 +44,7 @@ public class StageManager : MonoBehaviour {
 	private AudioSource audio;
 	
 	//Enemyやられたカウント
-	public int count = 0;
+	private int count = 0;
 	
 	private int t ;
 	private int k ;
@@ -55,14 +56,12 @@ public class StageManager : MonoBehaviour {
 	private int currentWave =0;
 
 	private bool objTmp = true;
-
-	//GameObject objectPool = new GameObject("objectPool");
-
-
 	
 	void Start()
 	{
-	
+        //現在のステージ
+        print("Now Stage: " + sc.getStageName());
+
 		//タイマー関係
 		startTime = Time.time;
 		//制限時間
@@ -78,20 +77,15 @@ public class StageManager : MonoBehaviour {
 		
 		//音
 		audio = GetComponent<AudioSource>();
-		
-		state.setState(GameState.Playing);
-		
-		//enemyGeneration ();
-		
-		//EnemyWaveを呼び出す
-		StartCoroutine ("enemyWave");
-		/*
-        for (int i = 0; i < enemys.Length; i++)
+
+        //Wavesをリソースから取得
+        for(int i = 0; i < enemys.Length; i++)
         {
-            Vector3 enemyPos = new Vector3((float)i , (float)i +2 , (float)i + 2);
-            Instantiate(enemys[i], enemyPos, transform.rotation);
-        } 
-        */
+            enemys[i] = (GameObject)Resources.Load("Waves/Wave" + j);
+        }
+        
+        //EnemyWaveを呼び出す
+        StartCoroutine ("enemyWave");
 		
 	}
 	
@@ -99,9 +93,6 @@ public class StageManager : MonoBehaviour {
 	{
 		//タイマー
 		setTimer();
-		
-		//スポナー
-		//Sporner();
 	}
 	
 	public void Counter(int i)
@@ -233,68 +224,33 @@ public class StageManager : MonoBehaviour {
 			objectPool = new GameObject("objectPool");
 			objectPool.transform.position = new Vector3(5, 2, 10);
 			foreach (GameObject n in waves) {
-				//print(n);
 				GameObject childN = Instantiate (n, transform.position, Quaternion.identity) as GameObject;
 				childN.SetActive(false);
 				childN.transform.parent = objectPool.transform;
-			objTmp = false;
-		}
+			    objTmp = false;
+		    }
 		
-		while (true) {
-				print ("k" + k);
-			// Waveを作成する
-			//GameObject wave = (GameObject)Instantiate (waves [currentWave], transform.position, Quaternion.identity);
-			
-			// WaveをStageManagerの子要素にする
-			//wave.transform.parent = transform;
-			//print("敵の数"+wave.transform.childCount);
-				yield return new WaitForSeconds (1.0f);
+		    while (true) {
+                yield return new WaitForSeconds (0.5f);
 
-			GameObject obp = objectPool.transform.GetChild(k).gameObject; 
-			obp.SetActive(true);
-			int temp = obp.transform.childCount;
-			print("childcount" + temp);
-
-				print ("足すまえのt" + t);
-			t =  t + temp;
-				print ("足したあとのt" + t);
+                GameObject obp = objectPool.transform.GetChild(k).gameObject; 
+                obp.SetActive(true);
+                int temp = obp.transform.childCount;
+                t =  t + temp;
+                
                 // Waveの子要素のEnemyが全て削除されるまで待機する
+			    while (t > count) {
+				    yield return new WaitForEndOfFrame ();
+			    }		
+			    k++;
 
-                //print(objectPool.transform.childCount);
-                //print(currentWave);
-
-			while (t > count) {
-				yield return new WaitForEndOfFrame ();
-			}
-			
-			print("すべて敵死んだ");
-				print("objectpoolの子要素" +objectPool.transform.childCount);
-				print ("かれんとうぇーぶ" + currentWave);
-				k++;
-			// Waveの削除
-			//Destroy (wave);
-
-			// 格納されているWaveを全て実行したらステージクリア
-			if (objectPool.transform.childCount  <= ++currentWave) {
-				setResult(true);
-				StartCoroutine(telop());
-					yield break;
-			}
-			
-		}
-	}
-	
-		/*
-	 void enemyGeneration(){
-		GameObject objectPool = new GameObject("objectPool");
-		foreach (GameObject n in waves) {
-			print(n);
-			GameObject childN = Instantiate (n, transform.position, Quaternion.identity) as GameObject;
-			childN.SetActive(false);
-			childN.transform.parent = objectPool.transform;
-
-		}
-	}
-	*/
-	}
+			    // 格納されているWaveを全て実行したらステージクリア
+			    if (objectPool.transform.childCount  <= ++currentWave) {
+				    setResult(true);
+				    StartCoroutine(telop());
+					    yield break;
+			    }
+		    }
+	    }
+    }
 }

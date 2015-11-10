@@ -16,8 +16,12 @@ public class Title : MonoBehaviour {
     void Start()
     {
         i = 0;
-        cs.defaultCleared();
+        cs.defaultData();
         cs.getCleared();
+        foreach(var val in cs.getClearedStages())
+        {
+            print(val);
+        }
         audio = GetComponent<AudioSource>();
     }
 

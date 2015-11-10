@@ -89,7 +89,12 @@ namespace GameSystems{
         private static Dictionary<StageName, int> clearedStages = new Dictionary<StageName, int>();
 
         //初期化
-        public void defaultCleared()
+        public void clearData()
+        {
+            PlayerPrefs.DeleteAll();
+        }
+
+        public void defaultData()
         {
             if (PlayerPrefs.HasKey(StageName.Stage1.ToString()) == false)
             {
@@ -97,6 +102,9 @@ namespace GameSystems{
                 PlayerPrefs.SetInt(StageName.Stage1.ToString(), 0);
                 PlayerPrefs.SetInt(StageName.Stage2.ToString(), 0);
                 PlayerPrefs.SetInt(StageName.Stage3.ToString(), 0);
+                clearedStages[StageName.Stage1] = PlayerPrefs.GetInt(StageName.Stage1.ToString(), 0);
+                clearedStages[StageName.Stage2] = PlayerPrefs.GetInt(StageName.Stage1.ToString(), 0);
+                clearedStages[StageName.Stage3] = PlayerPrefs.GetInt(StageName.Stage1.ToString(), 0);
                 Debug.Log("端末に保存した");
             }
             else

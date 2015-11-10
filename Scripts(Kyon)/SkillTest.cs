@@ -64,6 +64,7 @@ public class SkillTest : MonoBehaviour {
             transform.position = new Vector3(0, 2f, 0);
         }
 
+
         //スキル
         if (Input.GetKey("1"))
         {
