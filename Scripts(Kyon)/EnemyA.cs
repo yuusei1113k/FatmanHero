@@ -29,8 +29,8 @@ public class EnemyA : MonoBehaviour
     Controller con;
 
     //アイテム関連
-    public GameObject[] item;
-    public int itemTmp;
+    private GameObject[] item = new GameObject[5];
+    private int itemTmp;
 
     //音
     public AudioClip[] audioSorce;
@@ -43,7 +43,7 @@ public class EnemyA : MonoBehaviour
     Animator anim;
 
     //波動
-    public GameObject hado;
+    private GameObject hado;
 
     //プレイヤーの更生力
     private float jabAtk;
@@ -58,8 +58,17 @@ public class EnemyA : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         con = player.GetComponent<Controller>();
 
+        //波動
+        hado = transform.GetChild(4).gameObject;
+
         //徘徊モードにする
         nowState = enemyState[0];
+
+        //アイテムをリソースフォルダから取得
+        for(int i = 0; i < item.Length; i++)
+        {
+            item[i] = (GameObject)Resources.Load("Items/" + i);
+        }
 
         //ステージマネージャーコンポーネント
         sm = FindObjectOfType<StageManager>();
@@ -72,7 +81,7 @@ public class EnemyA : MonoBehaviour
 
         //アニメーション
         anim = GetComponent<Animator>();
-
+        //アニメーターレイヤー指定
         anim.SetLayerWeight(1, 1f);
 
     }
@@ -195,37 +204,37 @@ public class EnemyA : MonoBehaviour
             switch (c.tag)
             {
                 case "Jab":
-                    print("Hit Jab");
+                    print("Hit to Enemy: Jab");
                     //ジャブのヒット音
                     audio.PlayOneShot(audioSorce[0]);
                     evilPoint -= jabAtk;
                     break;
                 case "Smash":
-                    print("Hit Smash");
+                    print("Hit to Enemy: Smash");
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk;
                     break;
                 case "Hado":
-                    print("Hit Hado");
+                    print("Hit to Enemy: Hado");
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk;
                     break;
                 case "Sonic":
-                    print("Hit Sonic");
+                    print("Hit to Enemy: Sonic");
                     //ジャブのヒット音
                     audio.PlayOneShot(audioSorce[0]);
                     evilPoint -= jabAtk;
                     break;
                 case "Rush":
-                    print("Hit Rush");
+                    print("Hit to Enemy: Rush");
                     //ジャブのヒット音
                     audio.PlayOneShot(audioSorce[0]);
                     evilPoint -= jabAtk * 2;
                     break;
                 case "Havoc":
-                    print("Hit Havoc");
+                    print("Hit to Enemy: Havoc");
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk * 3;
@@ -238,7 +247,7 @@ public class EnemyA : MonoBehaviour
     //アイテムドロップ
     void itemPop()
     {
-        Vector3 itemPos = new Vector3(transform.position.x, -2f, transform.position.z);
+        Vector3 itemPos = new Vector3(transform.position.x, -3f, transform.position.z);
         Instantiate(item[itemTmp], itemPos, Quaternion.identity).name = itemTmp.ToString();
     }
 

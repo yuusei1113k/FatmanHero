@@ -6,14 +6,14 @@ using GameSystems;
 public class TouchPoint : MonoBehaviour {
 
     //タッチパッドの範囲
-    public GameObject panel;
+    private GameObject panel;
 
     //タッチした場所
-    public GameObject touchPad;
+    private GameObject touchPad;
     private Vector2 touchPoint;
 
     //スライドしてる場所
-    public GameObject slidePad;
+    private GameObject slidePad;
     private Vector2 slidePoint;
 
     //タッチ制限値
@@ -42,6 +42,11 @@ public class TouchPoint : MonoBehaviour {
     State state = new State();
 
     void Start () {
+        //パネル
+        panel = transform.GetChild(0).gameObject;
+        touchPad = GameObject.Find("Touch Point");
+        slidePad = GameObject.Find("Slide Point");
+
         //PanelのImageコンポーネント
         panelImage = panel.GetComponent<Image>();
         //Controllerコンポーネント取得
@@ -51,6 +56,7 @@ public class TouchPoint : MonoBehaviour {
         //タッチパッド非表示
         touchPad.SetActive(false);
         slidePad.SetActive(false);
+        panel.SetActive(false);
     }
 
     void Update()

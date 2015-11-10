@@ -67,14 +67,15 @@ public class Controller : MonoBehaviour {
     private int tapCount = 0;
 
     //オーディオソース
-    public AudioClip[] audioSorce;
+    private string[] audioList = new string[3] {"punch-swing", "jabpunch", "itemget"}; 
+    private AudioClip[] audioSorce = new AudioClip[3];
     private AudioSource audio;
 
     //波動
-    public GameObject hado;
+    private GameObject hado;
 
     //BMIManager
-    public BMIManager bmiManager;
+    private BMIManager bmiManager;
 
     //攻撃判定オンオフ用コライダー
     SphereCollider jab;
@@ -83,16 +84,24 @@ public class Controller : MonoBehaviour {
 
 
     void Start () {
+        //BMIManager
+        bmiManager = GameObject.Find("BMIManager").GetComponent<BMIManager>();
 		//攻撃判定オフ
-		button = FindObjectOfType<Buttons>();
+		button = GameObject.Find("Screen").GetComponent<Buttons>();
 
         //モーションをいじるため
         anim = GetComponent<Animator>();
 
         //オーディオソースコンポーネント
         audio = GetComponent<AudioSource>();
+        //オーディオクリップをリソースフォルダから取得
+        for(int i = 0; i < audioSorce.Length; i++)
+        {
+            audioSorce[i] = (AudioClip)Resources.Load("SEfects/" + audioList[i]);
+        }
 
         //波動非表示
+        hado = transform.GetChild(3).gameObject;
         hado.SetActive(false);
 
         //攻撃判定用
@@ -105,7 +114,7 @@ public class Controller : MonoBehaviour {
     void Update () {
 		if (state.getState() != GameState.Pausing)
 		{
-			move();
+            move();
 		}
 	}
 	
@@ -175,9 +184,12 @@ public class Controller : MonoBehaviour {
 					moveOk = true;
 
                     //移動モーション
-                    anim.SetBool("Move", true);
-                    anim.SetTrigger("Move");
-                    
+                    if(bmiManager.getSkillOn() == false)
+                    {
+                        anim.SetBool("Move", true);
+                        anim.SetTrigger("Move");
+                    }
+
                     //入力ベクトルをQuaternionに変換
                     Quaternion to = Quaternion.LookRotation(direction);
 					
@@ -196,7 +208,6 @@ public class Controller : MonoBehaviour {
 				//移動でもフリックでもなければ
 				else if (touchTime < touchJdg)
 				{
-					print("TapOK");
 					flickOk = false;
 					moveOk = false;
 					tapOk = true;
@@ -216,6 +227,7 @@ public class Controller : MonoBehaviour {
 			if (Input.GetMouseButtonUp(0))
 			{
 				print("Flick");
+                anim.SetTrigger("Flick");
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.deltaTime);
 				
 				//反転用
@@ -246,7 +258,6 @@ public class Controller : MonoBehaviour {
                     jab.enabled = true;
                     hado.tag = "Jab";
                     transform.Translate(transform.forward * 2 * Time.deltaTime);
-                    jab.enabled = false;
                 }
                 else
                 {
@@ -254,7 +265,6 @@ public class Controller : MonoBehaviour {
                     hado.tag = "Smash";
                     transform.Translate(transform.forward / 10);
                     tapCount = 0;
-                    smash.enabled = false;
                 }
                 tapOk = false;
                 //jab.enabled = false;
@@ -305,7 +315,7 @@ public class Controller : MonoBehaviour {
         //敵の攻撃にあったたら
         if (c.gameObject.tag == "Bullet")
         {
-            print("Bullet");
+            print("HIt to Player: Bullet");
             bmi -= 5f;
             c.gameObject.SetActive(false);
             //Destroy(c.gameObject);

@@ -22,12 +22,7 @@ public class StageSelect : MonoBehaviour {
     {
         audio = GetComponent<AudioSource>();
         audio.volume = 0.5f;
-        cs.getClearedStages();
-        foreach (var val in cs.getClearedStages())
-        {
-            print(val);
-        }
-
+        cs.getCleared();
     }
 
 
@@ -40,7 +35,7 @@ public class StageSelect : MonoBehaviour {
     IEnumerator titleCoroutine()
     {
         audio.Play();
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
         sc.toTitle();
         yield break;
     }
@@ -54,7 +49,7 @@ public class StageSelect : MonoBehaviour {
     IEnumerator stageSelectCoroutine()
     {
         audio.Play();
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
         sc.toStageSelect();
         yield break;
     }
@@ -68,7 +63,7 @@ public class StageSelect : MonoBehaviour {
     IEnumerator loadingCoroutine()
     {
         audio.Play();
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
         sc.toLoading();
         yield break;
     }
@@ -76,9 +71,9 @@ public class StageSelect : MonoBehaviour {
     //ステージ2ボタン
     public void stage02()
     {
-        sc.setStage(StageName.Stage2);
         if (cs.getClearedStages()[StageName.Stage1] == 1)
         {
+            sc.setStage(StageName.Stage2);
             StartCoroutine(loadingCoroutine());
         }
     }
@@ -86,9 +81,9 @@ public class StageSelect : MonoBehaviour {
     //ステージ3ボタン
     public void stage03()
     {
-        sc.setStage(StageName.Stage3);
         if (cs.getClearedStages()[StageName.Stage1] == 1 && cs.getClearedStages()[StageName.Stage2] == 1)
         {
+            sc.setStage(StageName.Stage3);
             StartCoroutine(loadingCoroutine());
         }
     }
@@ -121,6 +116,11 @@ public class StageSelect : MonoBehaviour {
     public void clearData()
     {
         PlayerPrefs.DeleteAll();
+        cs.getCleared();
+        foreach(var val in cs.getClearedStages())
+        {
+            print(val);
+        }
         print("初期化");
     }
 

@@ -2,12 +2,16 @@
 using System.Collections;
 using UnityEngine.Events;
 using GameSystems;
+using UnityEngine.UI;
 
-public class Button : MonoBehaviour
+public class Buttons : MonoBehaviour
 {
 
     //モーダル
     private GameObject modal;
+
+    //現在のステージ
+    private GameObject nowStage;
 
     //TFiP発動中かどうか
     private bool tfip;
@@ -16,8 +20,10 @@ public class Button : MonoBehaviour
     //BMIManagerコンポーネント
     BMIManager bmiManager;
 
+    //ステート
     State state = new State();
 
+    //シーンチェンジャー
     ScenChanger sc = new ScenChanger();
 
     private ParticleSystem tEffect;
@@ -26,7 +32,7 @@ public class Button : MonoBehaviour
     {
         //モーダル取得・非表示
         modal = GameObject.Find("PauseModal");
-        //print(modal);
+        nowStage = GameObject.Find("StageName");
         modal.SetActive(false);
 
         //BMIManagerコンポーネント
@@ -42,6 +48,7 @@ public class Button : MonoBehaviour
 
     }
 
+    //ボタン押しているか
     public void buttonTrue()
     {
         if (pushButton == false)
@@ -50,6 +57,7 @@ public class Button : MonoBehaviour
         }
     }
 
+    //ボタン話しているか
     public void buttonFalse()
     {
         if (pushButton == true)
@@ -69,6 +77,7 @@ public class Button : MonoBehaviour
             Time.timeScale = 0f;
             print("timeScale = 0");
             state.setState(GameState.Pausing);
+            nowStage.GetComponent<Text>().text = "現在のステージ\n" + sc.getStageName();
             modal.SetActive(true);
         }
         //ポーズ中だったら
@@ -103,7 +112,8 @@ public class Button : MonoBehaviour
             {
                 //発動
                 tfip = true;
-                tEffect.Play();
+                
+                //tEffect.Play();
             }
             //T・FiPが波動中だったら
             else
@@ -116,12 +126,30 @@ public class Button : MonoBehaviour
     }
 
     //スキルボタン
-    public void useSkill()
+    public void useSkillSonic()
     {
         if (state.getState() == GameState.Playing)
         {
             //BMIManagerコンポーネントのスキルを発動
-            bmiManager.useSkill();
+            bmiManager.useSkillSonic();
+        }
+    }
+    //スキルボタン
+    public void useSkillHundred()
+    {
+        if (state.getState() == GameState.Playing)
+        {
+            //BMIManagerコンポーネントのスキルを発動
+            bmiManager.useSkillHundred();
+        }
+    }
+    //スキルボタン
+    public void useSkillGround()
+    {
+        if (state.getState() == GameState.Playing)
+        {
+            //BMIManagerコンポーネントのスキルを発動
+            bmiManager.useSkillHavoc();
         }
     }
 

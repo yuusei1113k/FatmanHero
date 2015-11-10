@@ -41,8 +41,8 @@ public class BMIManager : MonoBehaviour {
     private Slider Tguage;
 
     //Tゲージレベル
-    public GameObject tLevel2;
-    public GameObject tLevel3;
+    private GameObject tLevel2;
+    private GameObject tLevel3;
 
     /*
         オレンジ#FFBA05FF
@@ -61,6 +61,9 @@ public class BMIManager : MonoBehaviour {
     //bmiカウンター
     private float bmiCounter = 0;
 
+    //ステート
+    State state = new State();
+
     //StageManatgerコンポーネント
     StageManager stage;
 
@@ -74,8 +77,9 @@ public class BMIManager : MonoBehaviour {
     private ParticleSystem tEffect;
 
     //波動エフェクト
-    public ParticleSystem hado;
-    public SphereCollider hadoc;
+    private ParticleSystem hado;
+    private SphereCollider hadoc;
+
     //ソニックブーム
     private GameObject SonicBody;
     private GameObject SonicSatellite;
@@ -92,11 +96,14 @@ public class BMIManager : MonoBehaviour {
 
     int i = 0;
     float skilTime = 0f;
-    bool skillOn = false;
+    public bool skillOn = false;
     
     //プレイヤーとコントローラー
-    public GameObject player;
+    private GameObject player;
     private Controller con;
+
+    //アニメーター
+    Animator anim;
 
 
     //他のスクリプトでbmi呼ぶ用
@@ -107,6 +114,13 @@ public class BMIManager : MonoBehaviour {
 
 
     void Start () {
+        //プレイヤー
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        //波動
+        hado = player.transform.GetChild(3).gameObject.GetComponent<ParticleSystem>();
+        hadoc = hado.GetComponent<SphereCollider>();
+
         //BMIゲージ(slider)を取得する
         BMIguage = GameObject.Find("BMIguage").GetComponent<Slider>();
 
@@ -115,6 +129,8 @@ public class BMIManager : MonoBehaviour {
 
         //Tゲージ(slider)を取得する
         Tguage = GameObject.Find("Tguage").GetComponent<Slider>();
+        tLevel2 = GameObject.Find("TLevel2");
+        tLevel3 = GameObject.Find("TLevel3");
 
         //Stageコンポーネント取得
         stage = FindObjectOfType<StageManager>();
@@ -137,14 +153,24 @@ public class BMIManager : MonoBehaviour {
         tEffect = GameObject.Find("TEffect").GetComponent<ParticleSystem>();
 
         //スキル関係
-        SonicBody = GameObject.Find("SonicBody");
+        //リソースからゲームオブジェクトを取得し出す
+        GameObject sb = (GameObject)Resources.Load("SkillObjects/SonicBody");
+        SonicBody = (GameObject)Instantiate(sb, sb.transform.position, sb.transform.rotation);
         SonicSatellite = GameObject.Find("SonicSatellite");
-        HundredField = GameObject.Find("HundredField");
+        GameObject hb = (GameObject)Resources.Load("SkillObjects/HUndredField");
+        Vector3 hbPos = new Vector3(player.transform.position.x, player.transform.position.y + 1.5f, player.transform.position.z + 1.0f);
+
+        HundredField = (GameObject)Instantiate(hb, hbPos, hb.transform.rotation);
         HundredJab = GameObject.Find("HundredJab");
-        Havoc = GameObject.Find("HavocField");
+        HundredField.transform.SetParent(player.transform);
+        GameObject hv = (GameObject)Resources.Load("SkillObjects/HavocField");
+        Havoc = (GameObject)Instantiate(hv, hv.transform.position, hv.transform.rotation);
         HundredField.SetActive(false);
         SonicBody.SetActive(false);
         Havoc.SetActive(false);
+
+        //アニメーター
+        anim = player.GetComponent<Animator>();
 
     }
 
@@ -157,7 +183,13 @@ public class BMIManager : MonoBehaviour {
 
     //BMIゲージの色・値変更
     public void changeBMIguage()
-    {
+    {        
+        //常時減少
+        if(state.getState() == GameState.Playing)
+        {
+            con.incBMI(-0.01f);
+        }
+
         //プレイヤーからBMIの値をとってくる
         bmi = con.getBMI();
 
@@ -171,19 +203,16 @@ public class BMIManager : MonoBehaviour {
         //色変化
         if (bmi > 150f)
         {
-            //print("BMI > 150");
             //BMIImage.color = new Color(6, 255, 131, 255);
             BMIImage.color = Color.green;
         }
         else if (bmi > 18)
         {
-            //print("BMI > 18");
             //BMIImage.color = new Color(255, 206, 0, 255);
             BMIImage.color = Color.yellow;
         }
         else if (bmi >= 0f)
         {
-            //print("BMI >= 0");
             //BMIImage.color = new Color(255, 6, 6, 255);
             BMIImage.color = Color.red;
         }
@@ -236,6 +265,10 @@ public class BMIManager : MonoBehaviour {
             hado.startSize = 1f;
             hadoc.radius = 0.3f;
         }
+        if(t < 33)
+        {
+            t = 33;
+        }
         Tguage.value = t;
     }
 
@@ -272,11 +305,16 @@ public class BMIManager : MonoBehaviour {
         }
         else if(skillOn == true)
         {
-            print("skilopn");
+            print("skilOn");
         }
     }
 
     //スキル
+    //使用状況取得用
+    public bool getSkillOn()
+    {
+        return skillOn;
+    }
     //スキル1ソニックブーム
     public void useSkillSonic()
     {
@@ -286,7 +324,6 @@ public class BMIManager : MonoBehaviour {
             {
                 sonic = true;
                 audio.volume = 0.1f;
-                audio.PlayOneShot(audioSorce[2]);
                 StartCoroutine(SkillSonic());
             }
         }
@@ -315,7 +352,6 @@ public class BMIManager : MonoBehaviour {
             {
                 havoc = true;
                 audio.volume = 0.1f;
-                audio.PlayOneShot(audioSorce[2]);
                 t -= 66;
                 StartCoroutine(SkillHavoc());
             }
@@ -325,9 +361,13 @@ public class BMIManager : MonoBehaviour {
     IEnumerator SkillSonic()
     {
         skillOn = true;
+        anim.SetTrigger("SkillSonic");
         SonicBody.transform.position = new Vector3(player.transform.position.x, -2f, player.transform.position.z);
-        SonicBody.transform.forward = player.transform.forward;
+        SonicBody.transform.rotation = player.transform.rotation;
+        yield return new WaitForSeconds(0.3f);
         SonicBody.SetActive(true);
+        audio.PlayOneShot(audioSorce[2]);
+        anim.SetTrigger("OffSkill");
         while (sonic == true)
         {
             skilTime = Time.deltaTime;
@@ -351,14 +391,13 @@ public class BMIManager : MonoBehaviour {
     //百烈拳本体
     IEnumerator SkillHundred()
     {
-        HundredField.transform.position = player.transform.position;
-        HundredJab.transform.position = HundredField.transform.position;
+        anim.SetTrigger("SkillRush");
         skillOn = true;
         while (hundred == true)
         {
             skilTime += Time.deltaTime;
             i++;
-            HundredJab.transform.position = new Vector3(player.transform.position.x + Random.Range(-1f, 2f), player.transform.position.y + Random.Range(1f, 2f), player.transform.position.z + Random.Range(-1f, 2f));
+            HundredJab.transform.position = new Vector3(player.transform.position.x + Random.Range(-1f, 1f), player.transform.position.y + Random.Range(1f, 2f),player.transform.position.z + 1f);
             HundredField.SetActive(true);
             HundredJab.SetActive(true);
             yield return new WaitForSeconds(0.03f);
@@ -371,6 +410,7 @@ public class BMIManager : MonoBehaviour {
         }
         i = 0;
         //print("skillTime: " + skilTime);
+        anim.SetTrigger("OffSkill");
         skilTime = 0f;
         skillOn = false;
         yield break;
@@ -379,11 +419,15 @@ public class BMIManager : MonoBehaviour {
     IEnumerator SkillHavoc()
     {
         ParticleSystem havocP = Havoc.GetComponent<ParticleSystem>();
+        anim.SetTrigger("SkillHavoc");
         Havoc.transform.localScale = Havoc.transform.localScale;
         Havoc.transform.position = player.transform.position;
         skillOn = true;
+        anim.SetTrigger("OffSkill");
+        yield return new WaitForSeconds(0.7f);
         while (havoc == true)
         {
+            audio.PlayOneShot(audioSorce[2]);
             skilTime += Time.deltaTime;
             i++;
             Havoc.SetActive(true);
@@ -409,28 +453,27 @@ public class BMIManager : MonoBehaviour {
     {
         audio.volume = 0.5f;
         audio.PlayOneShot(audioSorce[3]);
-        Debug.Log("ゲージ回復前" + bmi);
         switch (itemName)
         {
             case 0:
                 print("おむすび");
-                healPoint = 5f;
+                healPoint = 15f;
                 break;
             case 1:
                 print("コーラ");
-                healPoint = 10f;
+                healPoint = 20f;
                 break;
             case 2:
                 print("ポテチ");
-                healPoint = 20f;
-                break;
-            case 3:
-                print("肉まん");
                 healPoint = 30f;
                 break;
-            case 4:
+            case 3:
                 print("ピザ");
                 healPoint = 50f;
+                break;
+            case 4:
+                print("ピザボックス");
+                healPoint = 70f;
                 break;
             default:
                 healPoint = 0;
