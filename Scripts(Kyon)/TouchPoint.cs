@@ -45,7 +45,11 @@ public class TouchPoint : MonoBehaviour {
         //パネル
         panel = transform.GetChild(0).gameObject;
         touchPad = GameObject.Find("Touch Point");
+<<<<<<< HEAD
         slidePad = GameObject.Find("Slide Point");
+=======
+        slidePad = GameObject.Find("Slice Point");
+>>>>>>> 3e1ee5233d219e4b8c14cedbca268ca02e023e92
 
         //PanelのImageコンポーネント
         panelImage = panel.GetComponent<Image>();

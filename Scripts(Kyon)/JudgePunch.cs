@@ -14,8 +14,13 @@ public class JudgePunch : MonoBehaviour {
     //ジャブかスマッシュか判定して波動の攻撃力を決める
     void OnTriggerEnter(Collider c)
     {
+<<<<<<< HEAD
         //print("Trigger Judge: " + c.name);
         if (c.tag == "Jab" || c.tag == "Smash")
+=======
+//        print("Judge: " + c.tag);
+        if(c.tag == "Jab" || c.tag == "Smash")
+>>>>>>> 3e1ee5233d219e4b8c14cedbca268ca02e023e92
         {
             hado.tag = c.tag;
         }
