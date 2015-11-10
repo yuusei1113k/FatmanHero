@@ -127,7 +127,6 @@ public class Buttons : MonoBehaviour
 
     //スキルボタン
     public void useSkillSonic()
-<<<<<<< HEAD:Scripts(Kyon)/Buttons.cs
     {
         if (state.getState() == GameState.Playing)
         {
@@ -146,33 +145,10 @@ public class Buttons : MonoBehaviour
     }
     //スキルボタン
     public void useSkillGround()
-=======
->>>>>>> 3e1ee5233d219e4b8c14cedbca268ca02e023e92:Scripts(Kyon)/Buttons.cs
     {
         if (state.getState() == GameState.Playing)
         {
             //BMIManagerコンポーネントのスキルを発動
-<<<<<<< HEAD:Scripts(Kyon)/Buttons.cs
-=======
-            bmiManager.useSkillSonic();
-        }
-    }
-    //スキルボタン
-    public void useSkillHundred()
-    {
-        if (state.getState() == GameState.Playing)
-        {
-            //BMIManagerコンポーネントのスキルを発動
-            bmiManager.useSkillHundred();
-        }
-    }
-    //スキルボタン
-    public void useSkillGround()
-    {
-        if (state.getState() == GameState.Playing)
-        {
-            //BMIManagerコンポーネントのスキルを発動
->>>>>>> 3e1ee5233d219e4b8c14cedbca268ca02e023e92:Scripts(Kyon)/Buttons.cs
             bmiManager.useSkillHavoc();
         }
     }

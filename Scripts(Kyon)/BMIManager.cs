@@ -479,9 +479,7 @@ public class BMIManager : MonoBehaviour {
                 healPoint = 0;
                 break;
         }
-        Debug.Log("ヒールポイント：" + healPoint);
         con.incBMI(healPoint);
-        Debug.Log("ゲージ回復後" + bmi);
         return bmi;
     }
 }

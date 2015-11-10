@@ -26,10 +26,6 @@ public class Result : MonoBehaviour {
         if(state.getState() == GameState.StageClear)
         {
             cs.setCleared(sc.getStageName(), 1);
-<<<<<<< HEAD
-=======
-            //print(cs.getClearedStages()[sc.getStageName()]);
->>>>>>> 3e1ee5233d219e4b8c14cedbca268ca02e023e92
             clearScreen.SetActive(true);
             gameOverScreen.SetActive(false);
         }

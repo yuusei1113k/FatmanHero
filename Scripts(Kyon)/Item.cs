@@ -4,18 +4,11 @@ using UnityEngine.UI;
 
 public class Item : MonoBehaviour
 {
-<<<<<<< HEAD
-=======
-
-    private EnemyA enemy;
-
->>>>>>> 3e1ee5233d219e4b8c14cedbca268ca02e023e92
     private BMIManager bmiManager;
 
     // Use this for initialization
     void Start()
     {
-        enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyA>();
         bmiManager = GameObject.Find("BMIManager").GetComponent<BMIManager>();
     }
 

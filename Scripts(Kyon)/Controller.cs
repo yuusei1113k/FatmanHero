@@ -172,7 +172,6 @@ public class Controller : MonoBehaviour {
 				//フリックスピードが800以上あればフリック
 				if (flickSpeed > 800)
 				{
-					print("Flick stanby OK");
 					//フリックであると判定する
 					flickOk = true;
 				}

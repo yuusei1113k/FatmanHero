@@ -29,11 +29,7 @@ public class EnemyA : MonoBehaviour
     Controller con;
 
     //アイテム関連
-<<<<<<< HEAD
     private GameObject[] item = new GameObject[5];
-=======
-    public GameObject[] item;
->>>>>>> 3e1ee5233d219e4b8c14cedbca268ca02e023e92
     private int itemTmp;
 
     //音
