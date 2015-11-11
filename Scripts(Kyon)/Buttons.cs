@@ -26,7 +26,11 @@ public class Buttons : MonoBehaviour
     //シーンチェンジャー
     ScenChanger sc = new ScenChanger();
 
+    //パーティクル
     private ParticleSystem tEffect;
+
+    //
+    Animator anim;
 
     void Start()
     {
@@ -46,6 +50,7 @@ public class Buttons : MonoBehaviour
 
         tEffect.Stop();
 
+        anim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
     }
 
     //ボタン押しているか
@@ -105,6 +110,7 @@ public class Buttons : MonoBehaviour
     //T・FiPボタン
     public void startTFiP()
     {
+        print("tfip: " + tfip);
         if (state.getState() == GameState.Playing)
         {
             //T・FiPが発動してなければ
@@ -112,7 +118,7 @@ public class Buttons : MonoBehaviour
             {
                 //発動
                 tfip = true;
-                
+                anim.SetBool("TFiP", true);
                 //tEffect.Play();
             }
             //T・FiPが波動中だったら
@@ -120,6 +126,7 @@ public class Buttons : MonoBehaviour
             {
                 //停止
                 tEffect.Stop();
+                anim.SetBool("TFiP", false);
                 tfip = false;
             }
         }

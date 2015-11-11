@@ -59,9 +59,6 @@ public class StageManager : MonoBehaviour {
 	
 	void Start()
 	{
-        //現在のステージ
-        print("Now Stage: " + sc.getStageName());
-
 		//タイマー関係
 		startTime = Time.time;
 		//制限時間
@@ -183,33 +180,35 @@ public class StageManager : MonoBehaviour {
 			{
 				audio.Stop();
 				audio.clip = audioSorce[1];
-				audio.Play();
+				//audio.Play();
 				//audio.PlayOneShot(audioSorce[1]);
 				i++;
 			}
 			state.setState(GameState.StageClear);
 			resultTelop.GetComponent<Text>().text = "ステージクリア";
 		}
-		else
+		else if(c == false)
 		{
 			//ゲームオーバー
 			int i = 0;
 			while (i < 1)
 			{
+                print("GameOver");
 				audio.Stop();
-				//audio.clip = audioSorce[2];
-				audio.PlayOneShot(audioSorce[2]);
-				i++;
+				audio.clip = audioSorce[2];
+                //audio.Play();
+                //audio.PlayOneShot(audioSorce[2]);
+                i++;
 			}
 			state.setState(GameState.GameOver);
 			resultTelop.GetComponent<Text>().text = "ゲームオーバー";
 		}
 	}
 	
-	IEnumerator telop()
+	public IEnumerator telop()
 	{
 		audio.loop = false;
-		audio.PlayOneShot(audioSorce[0]);
+        audio.Play();
 		resultTelop.SetActive(true);
 		yield return new WaitForSeconds(3.0f);
 		resultTelop.SetActive(false);

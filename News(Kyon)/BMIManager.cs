@@ -131,6 +131,9 @@ public class BMIManager : MonoBehaviour {
     Animator anim;
 >>>>>>> remotes/origin/kyon
 
+    //スキルカットイン
+    GameObject[] cutIns = new GameObject[3];
+
     //他のスクリプトでbmi呼ぶ用
     public float getBMI()
     {
@@ -214,7 +217,17 @@ public class BMIManager : MonoBehaviour {
         //アニメーター
         anim = player.GetComponent<Animator>();
 
+<<<<<<< HEAD
 
+>>>>>>> remotes/origin/kyon
+=======
+        //スキルカットイン
+        cutIns[0] = GameObject.Find("CutIn1");
+        cutIns[1] = GameObject.Find("CutIn2");
+        cutIns[2] = GameObject.Find("CutIn3");
+        cutIns[0].SetActive(false);
+        cutIns[1].SetActive(false);
+        cutIns[2].SetActive(false);
 >>>>>>> remotes/origin/kyon
     }
 
@@ -295,11 +308,16 @@ public class BMIManager : MonoBehaviour {
         //レベル2
         if(t > 65 && t < 98)
         {
+            //表示
             tLevel2.SetActive(true);
             tLevel3.SetActive(false);
+            //更生力
             con.setJabAtk(2f);
             con.setSmashAtk(6f);
+            //オーラ
             tEffect.emissionRate = 20f;
+            tEffect.startSize = 3f;
+            //波動
             hado.startSize = 2f;
             hadoc.radius = 0.4f;
         }
@@ -311,6 +329,7 @@ public class BMIManager : MonoBehaviour {
             tLevel2.SetActive(true);
             tLevel3.SetActive(true);
             tEffect.emissionRate = 50f;
+            tEffect.startSize = 10f;
             hado.startSize = 3f;
             hadoc.radius = 0.5f;
         }
@@ -322,6 +341,7 @@ public class BMIManager : MonoBehaviour {
             tLevel2.SetActive(false);
             tLevel3.SetActive(false);
             tEffect.emissionRate = 5f;
+            tEffect.startSize = 2f;
             hado.startSize = 1f;
             hadoc.radius = 0.3f;
         }
@@ -395,8 +415,12 @@ public class BMIManager : MonoBehaviour {
                 sonic = true;
                 audio.volume = 0.1f;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 audio.PlayOneShot(audioSorce[2]);
 =======
+>>>>>>> remotes/origin/kyon
+=======
+                StartCoroutine(CutIn(0));
 >>>>>>> remotes/origin/kyon
                 StartCoroutine(SkillSonic());
             }
@@ -413,6 +437,7 @@ public class BMIManager : MonoBehaviour {
                 audio.volume = 0.1f;
                 audio.PlayOneShot(audioSorce[2]);
                 t -= 45;
+                StartCoroutine(CutIn(1));
                 StartCoroutine(SkillHundred());
             }
         }
@@ -431,6 +456,7 @@ public class BMIManager : MonoBehaviour {
 =======
 >>>>>>> remotes/origin/kyon
                 t -= 66;
+                StartCoroutine(CutIn(2));
                 StartCoroutine(SkillHavoc());
             }
         }
@@ -550,6 +576,14 @@ public class BMIManager : MonoBehaviour {
         yield break;
     }
 
+    //スキルカットイン
+    IEnumerator CutIn(int i)
+    {
+        cutIns[i].SetActive(true);
+        yield return new WaitForSeconds(1.0f);
+        cutIns[i].SetActive(false);
+        yield break;
+    }
 
     private float healPoint;
     //BMIゲージ回復
