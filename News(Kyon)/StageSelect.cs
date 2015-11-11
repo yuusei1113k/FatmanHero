@@ -39,12 +39,19 @@ public class StageSelect : MonoBehaviour {
         }
     }
 
-    void stageButton()
+    public void stageButton()
     {
-        stage2 = GameObject.Find("Stage2");
-        stage3 = GameObject.Find("Stage3");
-        stage2.SetActive(false);
-        stage3.SetActive(false);
+        try
+        {
+            stage2 = GameObject.Find("Stage2");
+            stage3 = GameObject.Find("Stage3");
+            stage2.SetActive(false);
+            stage3.SetActive(false);
+        }
+        catch (Exception e)
+        {
+            print(e);
+        }
         if (cs.getClearedStages()[StageName.Stage1] == 1)
         {
             try
