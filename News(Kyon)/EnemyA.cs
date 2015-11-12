@@ -2,8 +2,13 @@
 using System.Collections;
 using GameSystems;
 using System;
+<<<<<<< HEAD
+=======
+using UnityEngine.UI;
+>>>>>>> remotes/origin/kyon
 
-public class EnemyA : MonoBehaviour {
+public class EnemyA : MonoBehaviour
+{
 
     //プレイヤー座標取得用
     private GameObject player;
@@ -13,12 +18,16 @@ public class EnemyA : MonoBehaviour {
     public float speed = 1;
 
     //ステート
-    private string[] enemyState = new string[3] {"wonder", "attack","explode"};
+    private string[] enemyState = new string[3] { "wonder", "attack", "explode" };
     //ステート変更用
     private string nowState;
 
     //プレイヤーとの距離
+<<<<<<< HEAD
     private float limitDistanse = 5;
+=======
+    private float limitDistanse = 3;
+>>>>>>> remotes/origin/kyon
     private float distance;
 
     StageManager sm;
@@ -28,8 +37,13 @@ public class EnemyA : MonoBehaviour {
     Controller con;
 
     //アイテム関連
+<<<<<<< HEAD
     public GameObject[] item;
     public int itemTmp;
+=======
+    private GameObject[] item = new GameObject[5];
+    private int itemTmp;
+>>>>>>> remotes/origin/kyon
 
     //音
     public AudioClip[] audioSorce;
@@ -42,19 +56,62 @@ public class EnemyA : MonoBehaviour {
     Animator anim;
 
     //波動
+<<<<<<< HEAD
     public GameObject hado;
+=======
+    private GameObject hado;
+>>>>>>> remotes/origin/kyon
 
+    //プレイヤーの更生力
+    private float jabAtk;
+    private float smashAtk;
+    private bool attackOk;
+<<<<<<< HEAD
+
+    public float evilPoint = 25f;
+
+=======
+    
+    //悪意
+    public float evilPoint = 25f;
+
+    //カメラオブジェクト
+    GameObject camera;
+
+    //悪意バー
+    GameObject bar;
+    Slider slider;
+
+
+>>>>>>> remotes/origin/kyon
     void Start()
     {
         //プレイヤー取得
         player = GameObject.FindGameObjectWithTag("Player");
         con = player.GetComponent<Controller>();
 
+<<<<<<< HEAD
         //徘徊モードにする
         nowState = enemyState[0];
 
         //ステージマネージャーコンポーネント
         sm = FindObjectOfType<StageManager>();
+=======
+        //波動
+        hado = transform.GetChild(4).gameObject;
+
+        //徘徊モードにする
+        nowState = enemyState[0];
+
+        //アイテムをリソースフォルダから取得
+        for(int i = 0; i < item.Length; i++)
+        {
+            item[i] = (GameObject)Resources.Load("Items/" + i);
+        }
+
+        //ステージマネージャーコンポーネント
+        sm = GameObject.Find("StageManager").GetComponent<StageManager>();
+>>>>>>> remotes/origin/kyon
 
         //音を鳴らすコンポーネント
         audio = GetComponent<AudioSource>();
@@ -64,13 +121,34 @@ public class EnemyA : MonoBehaviour {
 
         //アニメーション
         anim = GetComponent<Animator>();
+<<<<<<< HEAD
 
         anim.SetLayerWeight(1, 1f);
 
+=======
+        //アニメーターレイヤー指定
+        anim.SetLayerWeight(1, 1f);
+
+        //カメラ
+        camera = GameObject.Find("Camera");
+
+        //悪意バー
+        bar = transform.GetChild(5).gameObject;
+        slider = bar.GetComponent<Slider>();
+        slider.maxValue = evilPoint;
+
+>>>>>>> remotes/origin/kyon
     }
 
     void Update()
     {
+<<<<<<< HEAD
+=======
+        //悪意バーがカメラを向く
+        bar.transform.LookAt(camera.transform);
+        slider.value = evilPoint;
+
+>>>>>>> remotes/origin/kyon
         //プレーヤーの位置
         playerPos = player.transform.position;
 
@@ -87,7 +165,7 @@ public class EnemyA : MonoBehaviour {
             anim.SetBool("Move", true);
         }
         //attackモード
-        else if(distance <= limitDistanse && evilPoint >= 0)
+        else if (distance <= limitDistanse && evilPoint >= 0)
         {
             nowState = enemyState[1];
             anim.SetBool("Move", false);
@@ -111,7 +189,7 @@ public class EnemyA : MonoBehaviour {
                 break;
             case "attack":
                 //attack();
-                if(attackOk == false)
+                if (attackOk == false)
                 {
                     StartCoroutine(attack());
                     attackOk = true;
@@ -123,12 +201,21 @@ public class EnemyA : MonoBehaviour {
                 break;
         }
     }
-    private bool attackOk;
 
     //やられたらカウント。
     void OnDisable()
     {
+<<<<<<< HEAD
         sm.Counter(1);
+=======
+        try
+        {
+            sm.Counter(1);
+        }catch(Exception e)
+        {
+            print(e);
+        }
+>>>>>>> remotes/origin/kyon
     }
 
     //徘徊モード
@@ -138,7 +225,7 @@ public class EnemyA : MonoBehaviour {
         Vector3 direction = playerPos - transform.position;
 
         //単位化（距離要素を取り除く
-        direction = direction.normalized; 
+        direction = direction.normalized;
 
         //プレイヤーに向かって移動
         transform.position = transform.position + (direction * speed * Time.deltaTime);
@@ -156,7 +243,6 @@ public class EnemyA : MonoBehaviour {
             yield return new WaitForSeconds(1.0f);
             anim.SetTrigger("Attack");
             hado.SetActive(true);
-            print("hoge");
             if (nowState != "attack")
             {
                 hado.SetActive(false);
@@ -167,7 +253,6 @@ public class EnemyA : MonoBehaviour {
 
 
     //悪意（体力）外用
-    public float evilPoint = 25f;
     public float getEvil()
     {
         return evilPoint;
@@ -177,13 +262,17 @@ public class EnemyA : MonoBehaviour {
         evilPoint += e;
     }
 
-    //プレイヤーの更生力
-    private float jabAtk;
-    private float smashAtk;
     void OnTriggerEnter(Collider c)
     {
         try
         {
+<<<<<<< HEAD
+        
+      		hit = new Vector3 (transform.position.x, transform.position.y + 1.5f, transform.position.z - 0.5f);
+			Transform camera = GameObject.Find("Camera").transform;
+			hitefect.transform.LookAt(camera);
+=======
+>>>>>>> remotes/origin/kyon
             //音量調整
             audio.volume = 0.1f;
 
@@ -193,25 +282,66 @@ public class EnemyA : MonoBehaviour {
             switch (c.tag)
             {
                 case "Jab":
+<<<<<<< HEAD
                     print("Hit Jab");
+=======
+                    print("Hit to Enemy: Jab");
+>>>>>>> remotes/origin/kyon
                     //ジャブのヒット音
                     audio.PlayOneShot(audioSorce[0]);
                     evilPoint -= jabAtk;
                     break;
                 case "Smash":
+<<<<<<< HEAD
                     print("Hit Smash");
+=======
+                    print("Hit to Enemy: Smash");
+>>>>>>> remotes/origin/kyon
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk;
                     break;
                 case "Hado":
-                    print("Hado");
+<<<<<<< HEAD
+                    print("Hit Hado");
+=======
+                    print("Hit to Enemy: Hado");
+>>>>>>> remotes/origin/kyon
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk;
                     break;
+                case "Sonic":
+<<<<<<< HEAD
+                    print("Hit Sonic");
+=======
+                    print("Hit to Enemy: Sonic");
+>>>>>>> remotes/origin/kyon
+                    //ジャブのヒット音
+                    audio.PlayOneShot(audioSorce[0]);
+                    evilPoint -= jabAtk;
+                    break;
+                case "Rush":
+<<<<<<< HEAD
+                    print("Hit Rush");
+=======
+                    print("Hit to Enemy: Rush");
+>>>>>>> remotes/origin/kyon
+                    //ジャブのヒット音
+                    audio.PlayOneShot(audioSorce[0]);
+                    evilPoint -= jabAtk * 2;
+                    break;
+                case "Havoc":
+<<<<<<< HEAD
+                    print("Hit Havoc");
+=======
+                    print("Hit to Enemy: Havoc");
+>>>>>>> remotes/origin/kyon
+                    //スマッシュのヒット音
+                    audio.PlayOneShot(audioSorce[1]);
+                    evilPoint -= smashAtk * 3;
+                    break;
             }
-
         }
         catch (Exception) { }
     }
@@ -219,7 +349,11 @@ public class EnemyA : MonoBehaviour {
     //アイテムドロップ
     void itemPop()
     {
-        Vector3 itemPos = new Vector3(transform.position.x, 1f, transform.position.z);
+<<<<<<< HEAD
+        Vector3 itemPos = new Vector3(transform.position.x, -2f, transform.position.z);
+=======
+        Vector3 itemPos = new Vector3(transform.position.x, -3f, transform.position.z);
+>>>>>>> remotes/origin/kyon
         Instantiate(item[itemTmp], itemPos, Quaternion.identity).name = itemTmp.ToString();
     }
 
@@ -237,10 +371,10 @@ public class EnemyA : MonoBehaviour {
         Vector3 force = Vector3.up * 1000f + UnityEngine.Random.insideUnitSphere * 300f;
         //GetComponent<Rigidbody>().AddForce(force);
         Vector3 up = new Vector3(0, 1f, 0);
-        transform.Translate(up * Time.deltaTime * 100, Space.World);
+        transform.Translate(up * Time.deltaTime * 15, Space.World);
 
         // ランダムに吹き飛ぶ回転力を加える
-        Vector3 torque = new Vector3(UnityEngine.Random.Range(-10000f, 10000f), UnityEngine.Random.Range(-10000f, 10000f), UnityEngine.Random.Range(-10000f, 10000f));
+        Vector3 torque = new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f));
         GetComponent<Rigidbody>().AddTorque(torque);
 
         //回転する
@@ -252,6 +386,6 @@ public class EnemyA : MonoBehaviour {
         //アイテム抽選、アイテムドロップ
         itemRnd();
         itemPop();
-        
+
     }
 }

@@ -32,9 +32,7 @@ public class LoadScene : MonoBehaviour
         lodingBar = GameObject.Find("LoadingBar").GetComponent<Slider>();
         loadingText = GameObject.Find("LoadingText").GetComponent<Text>();
         startText = GameObject.Find("StartText").GetComponent<Text>();
-        print("Stage: " + sc.getStageName());
-
-
+        print("Loading Stage: " + sc.getStageName());
         StartCoroutine(Load());
 
     }
@@ -47,18 +45,10 @@ public class LoadScene : MonoBehaviour
 
     IEnumerator Load()
     {
-
-
-        Debug.Log("コルーチン内処理" + parent);
-
-        //ステージ名はStage01～
         try
         {
             stageName = sc.getStageName().ToString();
-
             print("stageName: " + stageName);
-
-
             // 非同期でロード開始
             async = Application.LoadLevelAsync(stageName.ToString());
             // デフォルトはtrue。ロード完了したら勝手にシーンきりかえ発生しないよう設定。
@@ -71,25 +61,17 @@ public class LoadScene : MonoBehaviour
         }
 
         // 非同期読み込み中の処理
-
         while (async.progress < 0.9f)
         {
-            //while(i < 0.9f){
-
             loadingText.text = "NowLoading..." + (async.progress * 100).ToString("F0") + "%";
             Debug.Log("ローディングパーセント" + async.progress * 100);
             lodingBar.value = async.progress;
             yield return new WaitForEndOfFrame();
-
         }
         lodingBar.value = 0.9f;
         loadingText.text = "NowLoading...100%";
-
         yield return async;
-
     }
-
-
 
     void swichLoad()
     {

@@ -52,7 +52,7 @@ public class Controller : MonoBehaviour {
 	private float rotationSpeed = 10000.0f;
 	
     //Buttonコンポーネント
-	Button button;
+	Buttons button;
 
     //アニメーション
     Animator anim;
@@ -67,31 +67,54 @@ public class Controller : MonoBehaviour {
     private int tapCount = 0;
 
     //オーディオソース
-    public AudioClip[] audioSorce;
+    private string[] audioList = new string[3] {"punch-swing", "jabpunch", "itemget"}; 
+    private AudioClip[] audioSorce = new AudioClip[3];
     private AudioSource audio;
 
     //波動
-    public GameObject hado;
+    private GameObject hado;
+
+    //BMIManager
+    private BMIManager bmiManager;
+
+    //攻撃判定オンオフ用コライダー
+    SphereCollider jab;
+    SphereCollider smash;
+
 
 
     void Start () {
+        //BMIManager
+        bmiManager = GameObject.Find("BMIManager").GetComponent<BMIManager>();
 		//攻撃判定オフ
-		button = FindObjectOfType<Button>();
+		button = GameObject.Find("Screen").GetComponent<Buttons>();
 
         //モーションをいじるため
         anim = GetComponent<Animator>();
 
         //オーディオソースコンポーネント
         audio = GetComponent<AudioSource>();
+        //オーディオクリップをリソースフォルダから取得
+        for(int i = 0; i < audioSorce.Length; i++)
+        {
+            audioSorce[i] = (AudioClip)Resources.Load("SEfects/" + audioList[i]);
+        }
 
         //波動非表示
+        hado = transform.GetChild(3).gameObject;
         hado.SetActive(false);
+
+        //攻撃判定用
+        jab = GameObject.FindWithTag("Jab").GetComponent<SphereCollider>();
+        smash = GameObject.FindWithTag("Smash").GetComponent<SphereCollider>();
+        jab.enabled = false;
+        smash.enabled = false;
     }
 
     void Update () {
 		if (state.getState() != GameState.Pausing)
 		{
-			move();
+            move();
 		}
 	}
 	
@@ -149,7 +172,6 @@ public class Controller : MonoBehaviour {
 				//フリックスピードが800以上あればフリック
 				if (flickSpeed > 800)
 				{
-					print("Flick stanby OK");
 					//フリックであると判定する
 					flickOk = true;
 				}
@@ -161,9 +183,12 @@ public class Controller : MonoBehaviour {
 					moveOk = true;
 
                     //移動モーション
-                    anim.SetBool("Move", true);
-                    anim.SetTrigger("Move");
-                    
+                    if(bmiManager.getSkillOn() == false)
+                    {
+                        anim.SetBool("Move", true);
+                        anim.SetTrigger("Move");
+                    }
+
                     //入力ベクトルをQuaternionに変換
                     Quaternion to = Quaternion.LookRotation(direction);
 					
@@ -182,7 +207,6 @@ public class Controller : MonoBehaviour {
 				//移動でもフリックでもなければ
 				else if (touchTime < touchJdg)
 				{
-					print("TapOK");
 					flickOk = false;
 					moveOk = false;
 					tapOk = true;
@@ -202,6 +226,7 @@ public class Controller : MonoBehaviour {
 			if (Input.GetMouseButtonUp(0))
 			{
 				print("Flick");
+                anim.SetTrigger("Flick");
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.deltaTime);
 				
 				//反転用
@@ -229,17 +254,23 @@ public class Controller : MonoBehaviour {
                 //攻撃モーション時に全身
                 if(tapCount / 3 != 1)
                 {
+                    jab.enabled = true;
+                    hado.tag = "Jab";
                     transform.Translate(transform.forward * 2 * Time.deltaTime);
                 }
                 else
                 {
+                    smash.enabled = true;
+                    hado.tag = "Smash";
                     transform.Translate(transform.forward / 10);
                     tapCount = 0;
                 }
                 tapOk = false;
-			}
-		}
-	}
+                //jab.enabled = false;
+                //smash.enabled = false;
+            }
+        }
+    }
 
     /*
     探知機: Sphere Collider, Center(0, 1, 0), Radius(3), Is Trigger(On)
@@ -279,15 +310,15 @@ public class Controller : MonoBehaviour {
                 }
             }
         }
-        //敵の攻撃にあったたら
-        if (c.gameObject.name == "Bullet")
-        {
-            print("Bullet");
-            bmi -= 30f;
-            c.gameObject.SetActive(false);
-            Destroy(c.gameObject);
-        }
 
+        //敵の攻撃にあったたら
+        if (c.gameObject.tag == "Bullet")
+        {
+            print("HIt to Player: Bullet");
+            bmi -= 5f;
+            c.gameObject.SetActive(false);
+            //Destroy(c.gameObject);
+        }
     }
 
     //離れたらコレクションから削除
@@ -342,56 +373,9 @@ public class Controller : MonoBehaviour {
     IEnumerator Hado()
     {
         hado.SetActive(true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         hado.SetActive(false);
         yield break;
-    }
-
-    //スキル
-    //回転
-    public GameObject skillRound;
-    public GameObject skillHundred;
-    public GameObject skillHundredRound;
-    public IEnumerator SkillRound()
-    {
-        int i = 0;
-        while (true)
-        {
-            i++;
-            //print("Skill");
-            skillRound.SetActive(true);
-            skillRound.transform.RotateAround(transform.position, new Vector3(0f, 10f), 30f);
-            yield return new WaitForFixedUpdate();
-            if (i >= 200)
-            {
-                print("i >= 50");
-                skillRound.SetActive(false);
-                StopCoroutine(SkillRound());
-                yield break;
-            }
-        }
-    }
-
-    //百裂拳
-    public IEnumerator SkillHundred()
-    {
-        int i = 0;
-        while (true)
-        {
-            i++;
-            //print("Skill");
-            skillHundred.SetActive(true);
-            transform.Translate(transform.forward * 2 * Time.deltaTime);
-            skillHundredRound.transform.RotateAround(transform.position, new Vector3(0f, 10f), 90f);
-            yield return new WaitForFixedUpdate();
-            if (i >= 200)
-            {
-                print("i >= 50");
-                skillHundred.SetActive(false);
-                StopCoroutine(SkillHundred());
-                yield break;
-            }
-        }
     }
 
 }
