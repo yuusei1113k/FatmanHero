@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GameSystems;
 
 public class FollowPlayer : MonoBehaviour
 {
 	private Transform target;    // ターゲットへの参照
 	private Vector3 offset;     // 相対座標
-	
-	void Start ()
+    State state = new State();
+
+    void Start ()
 	{
         GameObject g = GameObject.FindGameObjectWithTag("Player");
         target = g.transform;
@@ -16,6 +18,7 @@ public class FollowPlayer : MonoBehaviour
 	
 	void Update ()
 	{
+        if(state.getState() == GameState.Playing)
 		// 自分自身の座標に、targetの座標に相対座標を足した値を設定する
 		GetComponent<Transform>().position = target.position + offset;
 	}

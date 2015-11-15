@@ -5,10 +5,10 @@ using GameSystems;
 
 public class BMIManager : MonoBehaviour {
     //BMIを減らすスピードを変える
-    public float bmiDecrement = 1f;
+    private float bmiDecrement = 1f;
 
     //T・FiPを増やすスピードを変える
-    public float tIncrement = 1f;
+    private float tIncrement = 3f;
     
     //BMIゲージ(slider)
     private Slider BMIguage;
@@ -92,10 +92,12 @@ public class BMIManager : MonoBehaviour {
     //グランドハボック
     private GameObject Havoc;
     bool havoc = false;
+    private GameObject testHavoc;
+
 
     int i = 0;
     float skilTime = 0f;
-    public bool skillOn = false;
+    private bool skillOn = false;
     
     //プレイヤーとコントローラー
     private GameObject player;
@@ -159,16 +161,21 @@ public class BMIManager : MonoBehaviour {
 
         //スキル関係
         //リソースからゲームオブジェクトを取得し出す
+        //ソニックブーム
         GameObject sb = (GameObject)Resources.Load("SkillObjects/SonicBody");
         SonicBody = (GameObject)Instantiate(sb, sb.transform.position, sb.transform.rotation);
         SonicSatellite = GameObject.Find("SonicSatellite");
-        GameObject hb = (GameObject)Resources.Load("SkillObjects/HUndredField");
-        Vector3 hbPos = new Vector3(player.transform.position.x, player.transform.position.y + 1.5f, player.transform.position.z + 1.0f);
 
+        //ハンドレッドラッシュ
+        GameObject hb = (GameObject)Resources.Load("SkillObjects/HundredField");
+        Vector3 hbPos = new Vector3(player.transform.position.x, player.transform.position.y + 1.5f, player.transform.position.z + 1.0f);
         HundredField = (GameObject)Instantiate(hb, hbPos, hb.transform.rotation);
         HundredJab = GameObject.Find("HundredJab");
         HundredField.transform.SetParent(player.transform);
-        GameObject hv = (GameObject)Resources.Load("SkillObjects/HavocField");
+
+        //グランドハボック
+        //GameObject hv = (GameObject)Resources.Load("SkillObjects/HavocField");
+        GameObject hv = (GameObject)Resources.Load("SkillObjects/TestHavoc");
         Havoc = (GameObject)Instantiate(hv, hv.transform.position, hv.transform.rotation);
         HundredField.SetActive(false);
         SonicBody.SetActive(false);
@@ -194,6 +201,8 @@ public class BMIManager : MonoBehaviour {
         //BMI・Tゲージ監視
         changeBMIguage();
         changeTguage();
+
+        //デバッグ用
         if (Input.GetKeyDown("1"))
         {
             StartCoroutine(CutIn(0));
@@ -372,7 +381,7 @@ public class BMIManager : MonoBehaviour {
         }
         else if(skillOn == true)
         {
-            print("skilOn");
+            //print("skilOn");
         }
     }
 
@@ -481,22 +490,20 @@ public class BMIManager : MonoBehaviour {
         i = 0;
         //print("skillTime: " + skilTime);
         anim.SetTrigger("OffSkill");
+        print("anim.setTrigger(off)");
         skilTime = 0f;
         skillOn = false;
         yield break;
     }
 
-    public GameObject testHavoc;
-    
     //グランドハボック本体
     IEnumerator SkillHavoc()
     {
         ParticleSystem havocP = Havoc.GetComponent<ParticleSystem>();
         anim.SetTrigger("SkillHavoc");
-        //Havoc.transform.localScale = Havoc.transform.localScale;
+        Havoc.transform.localScale = Havoc.transform.localScale;
         //Havoc.transform.position = player.transform.position;
-        //testHavoc.transform.localScale = Havoc.transform.localScale;
-        testHavoc.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 0.1f, player.transform.position.z);
+        Havoc.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 0.1f, player.transform.position.z);
         skillOn = true;
         anim.SetTrigger("OffSkill");
         yield return new WaitForSeconds(0.7f);
@@ -505,11 +512,9 @@ public class BMIManager : MonoBehaviour {
             audio.PlayOneShot(audioSorce[2]);
             skilTime += Time.deltaTime;
             i++;
-            //Havoc.SetActive(true);
-            testHavoc.SetActive(true);
+            Havoc.SetActive(true);
             yield return new WaitForSeconds(1.0f);
-            //Havoc.SetActive(false);
-            testHavoc.SetActive(false);
+            Havoc.SetActive(false);
             yield return new WaitForSeconds(1.0f);
             if (i > 2)
             {
@@ -541,23 +546,23 @@ public class BMIManager : MonoBehaviour {
         switch (itemName)
         {
             case 0:
-                print("おむすび");
+                //print("おむすび");
                 healPoint = 15f;
                 break;
             case 1:
-                print("コーラ");
+                //print("コーラ");
                 healPoint = 20f;
                 break;
             case 2:
-                print("ポテチ");
+                //print("ポテチ");
                 healPoint = 30f;
                 break;
             case 3:
-                print("ピザ");
+                //print("ピザ");
                 healPoint = 50f;
                 break;
             case 4:
-                print("ピザボックス");
+                //print("ピザボックス");
                 healPoint = 70f;
                 break;
             default:

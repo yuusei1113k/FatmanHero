@@ -20,7 +20,7 @@ public class Boss: MonoBehaviour
     private string nowState;
 
     //プレイヤーとの距離
-    private float limitDistanse = 3;
+    private float limitDistanse = 3f;
     private float distance;
 
     StageManager sm;
@@ -52,7 +52,7 @@ public class Boss: MonoBehaviour
     private bool attackOk;
 
     //Boss HP
-    public float evilPoint = 25f;
+    public float evilPoint = 100f;
 
     //攻撃切り替え
     private System.Random ran;
@@ -60,6 +60,11 @@ public class Boss: MonoBehaviour
     //悪意バー
     GameObject bar;
     Slider slider;
+
+    //カメラオブジェクト
+    GameObject camera;
+
+    Hitefect hitefect;
 
     void Start()
     {
@@ -95,6 +100,11 @@ public class Boss: MonoBehaviour
         //攻撃切り替え判定
         ran = new System.Random();
 
+        //カメラ
+        camera = GameObject.Find("Sub Camera");
+
+        hitefect = GetComponent<Hitefect>();
+
         //悪意バー
         bar = transform.GetChild(4).gameObject;
         slider = bar.GetComponent<Slider>();
@@ -105,6 +115,10 @@ public class Boss: MonoBehaviour
 
     void Update()
     {
+        //悪意バーがカメラを向く
+        bar.transform.LookAt(camera.transform);
+        slider.value = evilPoint;
+
         //プレーヤーの位置
         playerPos = player.transform.position;
 
@@ -144,11 +158,9 @@ public class Boss: MonoBehaviour
                 attackOk = false;
                 break;
             case "attack":
-                //attack();
                 if (attackOk == false)
                 {
                     StartCoroutine(attack());
-                    attackOk = true;
                 }
                 break;
             case "explode":
@@ -189,32 +201,66 @@ public class Boss: MonoBehaviour
 
     //攻撃モード
     //攻撃コルーチン
+    int attackCount;
     IEnumerator attack()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(1.0f);
+        attackCount++;
             // 攻撃判定を１秒
             rand = ran.Next(101);
-            print("RANDOM数値" + (rand % 2));
-            if (rand %2 == 0)
+            //print("RANDOM数値" + (rand % 2));
+            if (rand % 2 == 0)
             {
+                print("Boss Attack");
                 anim.SetTrigger("Attack");
-                hado.SetActive(true);
-                yield return new WaitForSeconds(4.0f);
-            }
-            else if (rand %2 == 1)
+            if(attackCount % 3 == 0)
             {
+                print("atkhado");
+                hado.SetActive(true);
+                yield return new WaitForSeconds(1.0f);
+                hado.SetActive(false);
+                yield return new WaitForSeconds(3.0f);
+            }
+            anim.SetTrigger("Stay");
+                attackOk = true;
+                yield break;
+            }
+            else if (rand % 2 == 1)
+            {
+                print("Boss Skill");
                 anim.SetTrigger("Skill");
-                hado.SetActive(true);
-                yield return new WaitForSeconds(4.0f);
-            }
-            if (nowState != "attack")
+                //方向
+                Vector3 direction = playerPos - transform.position;
+
+                //単位化（距離要素を取り除く
+                direction = direction.normalized;
+
+                //プレイヤーに向かって移動
+                transform.position = transform.position + (direction * speed * Time.deltaTime);
+            if (attackCount % 3 == 0)
             {
+                print("sklhado");
+                hado.SetActive(true);
+                yield return new WaitForSeconds(1.0f);
+                hado.SetActive(false);
+                yield return new WaitForSeconds(3.0f);
+            }
+            anim.SetTrigger("Stay");
+                attackOk = true;
+                yield break;
+            }
+            else
+            {
+                print("Boss else");
                 hado.SetActive(false);
                 yield break;
             }
-        }
+            if (nowState != "attack")
+            {
+                print("Boss notAttackState");
+                hado.SetActive(false);
+                attackOk = true;
+                yield break;
+            }
     }
 
 

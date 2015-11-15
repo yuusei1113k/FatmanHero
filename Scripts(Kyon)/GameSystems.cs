@@ -21,7 +21,7 @@ namespace GameSystems{
     };
 
 
-    //デバッグ用
+    //ステート・ステージ確認用
     public class DebugSystem: MonoBehaviour
     {
         public void OnGUI()
@@ -112,7 +112,7 @@ namespace GameSystems{
         //リザルトへ
         public void toResult()
         {
-            if(PlayerPrefs.GetInt(StageName.Stage3.ToString(), 0) == 1)
+            if(currentStage == StageName.Stage3)
             {
                 Application.LoadLevel("GameClear");
             }
@@ -150,11 +150,11 @@ namespace GameSystems{
                 clearedStages[StageName.Stage1] = PlayerPrefs.GetInt(StageName.Stage1.ToString(), 0);
                 clearedStages[StageName.Stage2] = PlayerPrefs.GetInt(StageName.Stage2.ToString(), 0);
                 clearedStages[StageName.Stage3] = PlayerPrefs.GetInt(StageName.Stage3.ToString(), 0);
-                Debug.Log("端末に保存した");
+                //Debug.Log("端末に保存した");
             }
             else
             {
-                Debug.Log("すでに端末に保存されてる");
+                //Debug.Log("すでに端末に保存されてる");
             }
         }
 
@@ -181,7 +181,7 @@ namespace GameSystems{
             }
             else
             {
-                Debug.Log("まだ端末に保存されてない");
+                //Debug.Log("まだ端末に保存されてない");
             }
         }
 

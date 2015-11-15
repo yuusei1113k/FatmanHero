@@ -64,7 +64,7 @@ public class LoadScene : MonoBehaviour
         while (async.progress < 0.9f)
         {
             loadingText.text = "NowLoading..." + (async.progress * 100).ToString("F0") + "%";
-            Debug.Log("ローディングパーセント" + async.progress * 100);
+            //Debug.Log("ローディングパーセント" + async.progress * 100);
             lodingBar.value = async.progress;
             yield return new WaitForEndOfFrame();
         }
@@ -79,7 +79,7 @@ public class LoadScene : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             // タッチしたら遷移する（検証用）
-            Debug.Log("タッチ取得");
+            //Debug.Log("タッチ取得");
             async.allowSceneActivation = true;
         }
     }

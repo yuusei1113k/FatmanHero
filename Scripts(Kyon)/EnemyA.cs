@@ -236,42 +236,42 @@ public class EnemyA : MonoBehaviour
             switch (c.tag)
             {
                 case "Jab":
-                    print("Hit to Enemy: Jab");
+                    //print("Hit to Enemy: Jab");
                     //ジャブのヒット音
                     audio.PlayOneShot(audioSorce[0]);
                     evilPoint -= jabAtk;
 					hitefect.PlayerattackHit();
                     break;
                 case "Smash":
-                    print("Hit to Enemy: Smash");
+                    //print("Hit to Enemy: Smash");
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk;
 					hitefect.PlayerattackHit();
                     break;
                 case "Hado":
-                    print("Hit to Enemy: Hado");
+                    //print("Hit to Enemy: Hado");
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk;
 					hitefect.PlayerattackHit();
 					break;
                 case "Sonic":
-                    print("Hit to Enemy: Sonic");
+                    //print("Hit to Enemy: Sonic");
                     //ジャブのヒット音
                     audio.PlayOneShot(audioSorce[0]);
                     evilPoint -= jabAtk;
 					hitefect.PlayerattackHit();
                     break;
                 case "Rush":
-                    print("Hit to Enemy: Rush");
+                    //print("Hit to Enemy: Rush");
                     //ジャブのヒット音
                     audio.PlayOneShot(audioSorce[0]);
                     evilPoint -= jabAtk * 2;
 					hitefect.PlayerattackHit();
                     break;
                 case "Havoc":
-                    print("Hit to Enemy: Havoc");
+                    //print("Hit to Enemy: Havoc");
                     //スマッシュのヒット音
                     audio.PlayOneShot(audioSorce[1]);
                     evilPoint -= smashAtk * 3;

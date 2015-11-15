@@ -64,7 +64,7 @@ public class TouchPoint : MonoBehaviour {
         //フリックの状態
          if (controller.getFlick() == true)
         {
-            print("Flick!");
+            //print("Flick!");
         }
         else
         {

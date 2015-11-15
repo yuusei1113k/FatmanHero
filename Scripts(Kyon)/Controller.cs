@@ -84,9 +84,12 @@ public class Controller : MonoBehaviour {
     //残像
     TrailRenderer trail;
 
+    //アニメーターステート保存用
+    int[] stateHash = new int[4];
+
+
     //BMI外用
     public float bmi = 200f;
-
 
     void Start () {
         //デバッグ用
@@ -121,18 +124,47 @@ public class Controller : MonoBehaviour {
         //残像
         trail = transform.GetComponent<TrailRenderer>();
         trail.enabled = false;
+
+        //アニメーターステート
+        stateHash[0] = 17588480;
+        stateHash[1] = 1284765916;
+        stateHash[2] = -711284378;
+        stateHash[3] = -355276023;
     }
 
     void Update () {
-		if (state.getState() != GameState.Pausing)
+        if (state.getState() != GameState.Pausing)
 		{
             move();
 		}
+
+        //デバッグ用
+        if (Input.GetKeyDown("p"))
+        {
+            bm = 0;
+            StartCoroutine(bmi200());
+        }
+        if (Input.GetKeyDown("o"))
+        {
+            bm = 0;
+            StopCoroutine(bmi200());
+        }
         if (Input.GetKeyDown("d"))
         {
             bmi = 0;
         }
 	}
+
+    int bm = 0;
+    IEnumerator bmi200()
+    {
+        while(bm < 1000)
+        {
+            bmi = 200;
+            yield return new WaitForSeconds(0.5f);
+            bm++;
+        }
+    }
 	
 	//コントローラー状態
 	public bool getFlick()
@@ -197,7 +229,6 @@ public class Controller : MonoBehaviour {
 				{
 					//移動判定オン
 					moveOk = true;
-
                     //移動モーション
                     if(bmiManager.getSkillOn() == false)
                     {
@@ -241,7 +272,7 @@ public class Controller : MonoBehaviour {
 		{
 			if (Input.GetMouseButtonUp(0))
 			{
-				print("Flick");
+				//print("Flick");
                 anim.SetTrigger("Flick");
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.deltaTime);
 				
@@ -261,30 +292,51 @@ public class Controller : MonoBehaviour {
 		{
 			if (Input.GetMouseButtonUp(0))
 			{
-				print("Tap");
+				//print("Tap");
                 tapCount++;
                 anim.SetBool("Move", false);
                 anim.SetTrigger("Attack");
                 StartCoroutine(Hado());
-                //攻撃モーション時に全身
-                if(tapCount / 3 != 1)
-                {
-                    jab.enabled = true;
-                    hado.tag = "Jab";
-                    transform.Translate(transform.forward * 2 * Time.deltaTime);
-                }
-                else
-                {
-                    smash.enabled = true;
-                    hado.tag = "Smash";
-                    transform.Translate(transform.forward / 10);
-                    tapCount = 0;
-                }
+                StartCoroutine(punch());
                 tapOk = false;
-                //jab.enabled = false;
-                //smash.enabled = false;
             }
         }
+    }
+
+    //タップアクション
+    IEnumerator punch()
+    {
+        //print(anim.GetCurrentAnimatorStateInfo(0).fullPathHash);
+        if (stateHash[1] == anim.GetCurrentAnimatorStateInfo(0).fullPathHash || stateHash[2] == anim.GetCurrentAnimatorStateInfo(0).fullPathHash)
+        {
+            //print("Jab");
+            jab.enabled = true;
+            hado.tag = "Jab";
+            transform.Translate(transform.forward * 2 * Time.deltaTime);
+            yield return new WaitForSeconds(0.5f);
+            jab.enabled = false;
+            yield break;
+        }
+        else if(stateHash[3] == anim.GetCurrentAnimatorStateInfo(0).fullPathHash)
+        {
+            //print("Smash");
+            smash.enabled = true;
+            hado.tag = "Smash";
+            transform.Translate(transform.forward / 10);
+            tapCount = 0;
+            yield return new WaitForSeconds(0.5f);
+            smash.enabled = false;
+            yield break;
+        }
+    }
+
+    //タップ時波動エフェクトを出す
+    IEnumerator Hado()
+    {
+        hado.SetActive(true);
+        yield return new WaitForSeconds(0.2f);
+        hado.SetActive(false);
+        yield break;
     }
 
     //フリックアクション
@@ -338,10 +390,9 @@ public class Controller : MonoBehaviour {
         //敵の攻撃にあったたら
         if (c.gameObject.tag == "Bullet")
         {
-            print("HIt to Player: Bullet");
+            //print("HIt to Player: Bullet");
             bmi -= 5f;
             c.gameObject.SetActive(false);
-            //Destroy(c.gameObject);
         }
     }
 
@@ -390,14 +441,4 @@ public class Controller : MonoBehaviour {
     {
         smashAtk = f;
     }
-
-    //タップ時波動エフェクトを出す
-    IEnumerator Hado()
-    {
-        hado.SetActive(true);
-        yield return new WaitForSeconds(0.2f);
-        hado.SetActive(false);
-        yield break;
-    }
-
 }

@@ -49,6 +49,9 @@ public class StageManager : MonoBehaviour {
 
     // Wave関連
     private GameObject objectPool;
+    private GameObject[] stage1Waves = new GameObject[4];
+    private GameObject[] stage2Waves = new GameObject[4];
+    private GameObject[] stage3Waves = new GameObject[4];
     private GameObject[] waves = new GameObject[4];
     int j = 1;
     private int currentWave = 0;
@@ -62,15 +65,14 @@ public class StageManager : MonoBehaviour {
 
     void Start()
 	{
+        //現在のステージ確認用
+        print("開始ステージ: " + sc.getStageName());
 		//タイマー関係
 		startTime = Time.time;
 		//制限時間
 		outTime = 180;
 		timer = GameObject.Find("Timer");
-		
-		//ゲームステート
-		state.setState(GameState.Playing);
-		
+				
 		//テロップ
 		resultTelop = GameObject.Find("ResultTelop");
 		resultTelop.SetActive(false);
@@ -83,9 +85,11 @@ public class StageManager : MonoBehaviour {
         debu = (GameObject)Resources.Load("Debu");
 
         //Wavesをリソースから取得
-        for(int i = 0; i < waves.Length; i++)
+        for(int i = 0; i < stage1Waves.Length; i++)
         {
-            waves[i] = (GameObject)Resources.Load("Waves/Wave" + j);
+            stage1Waves[i] = (GameObject)Resources.Load("Waves/Stage1/Wave" + j);
+            stage2Waves[i] = (GameObject)Resources.Load("Waves/Stage2/Wave" + j);
+            stage3Waves[i] = (GameObject)Resources.Load("Waves/Stage3/Wave" + j);
             j++;
         }
         
@@ -98,6 +102,8 @@ public class StageManager : MonoBehaviour {
 	{
 		//タイマー
 		setTimer();
+
+        //デバッグ用
         if (Input.GetKeyDown("z"))
         {
             GameObject[] wave = new GameObject[4];
@@ -116,20 +122,16 @@ public class StageManager : MonoBehaviour {
         {
             Application.LoadLevel(Application.loadedLevel);
         }
-        if (Input.GetKeyDown("z"))
+        if (Input.GetKeyDown("c"))
         {
-            foreach (var val in waves)
-            {
-                val.SetActive(false);
-            } 
+            setResult(true);
+            sc.toResult();
         }
-
     }
 
     public void Counter(int i)
 	{
 		count += i;
-		//print("Count: " + count);
 	} 
 		
 	//タイマー書き換え
@@ -231,7 +233,6 @@ public class StageManager : MonoBehaviour {
             player.SetActive(false);
             debu = (GameObject)Instantiate(debu, player.transform.position, debu.transform.rotation);
             debuClone = GameObject.Find("Debu(Clone)");
-            //print(debuClone);
             debuClone.transform.position = new Vector3(debu.transform.position.x, debu.transform.position.y - 0.5f, debu.transform.position.z);
             yield return new WaitForSeconds(0.5f);
             debuCnt++;
@@ -269,13 +270,28 @@ public class StageManager : MonoBehaviour {
 	{
         if (objTmp)
         {
+            while (state.getState() == GameState.NotPlaying)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             objectPool = new GameObject("ObjectPool");
             objectPool.AddComponent<RectTransform>();
             objectPool.AddComponent<Canvas>().renderMode = RenderMode.WorldSpace;
             objectPool.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             objectPool.AddComponent<GraphicRaycaster>();
             objectPool.transform.position = new Vector3(5, 2, 10);
-
+            switch (sc.getStageName())
+            {
+                case StageName.Stage1:
+                    waves = stage1Waves;
+                    break;
+                case StageName.Stage2:
+                    waves = stage2Waves;
+                    break;
+                case StageName.Stage3:
+                    waves = stage3Waves;
+                    break;
+            }
             foreach (GameObject n in waves)
             {
                 GameObject childN = Instantiate(n, transform.position, Quaternion.identity) as GameObject;

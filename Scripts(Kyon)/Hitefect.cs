@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Hitefect : MonoBehaviour {
-	public GameObject playerattackHit;
+	private GameObject playerattackHit;
 
 	public void PlayerattackHit ()
 	{
@@ -11,11 +11,6 @@ public class Hitefect : MonoBehaviour {
 	}
 	// Use this for initialization
 	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+        playerattackHit = Resources.Load<GameObject>("Effects/playerattackHit");
 	}
 }
